@@ -16,11 +16,18 @@ public class JdbcMovieDao implements MovieDao {
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     private static final String GET_ALL = "SELECT id, name, country, year, description, rating, price, poster_img " +
             "FROM public.movies";
+    public static final String GET_RANDOM = "SELECT id, name, country, year, description, rating, price, poster_img " +
+            "FROM public.movies ORDER BY RANDOM() LIMIT 3";
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Movie> getAll() {
         return jdbcTemplate.query(GET_ALL, MOVIE_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Movie> getThreeRandomMovies() {
+        return jdbcTemplate.query(GET_RANDOM, MOVIE_ROW_MAPPER);
     }
 }

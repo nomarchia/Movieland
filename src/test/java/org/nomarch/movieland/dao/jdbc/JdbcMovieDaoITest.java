@@ -53,6 +53,14 @@ class JdbcMovieDaoITest {
         Assert.assertTrue(new ReflectionEquals(expectedMovieLast).matches(actualMovies.get(24)));
     }
 
+    @DisplayName("Get three random movies")
+    @Test
+    void getThreeRandomMovies() {
+        List<Movie> actualMovies = jdbcMovieDao.getThreeRandomMovies();
+
+        assertEquals(3, actualMovies.size());
+    }
+
     class SortById implements Comparator<Movie>
     {
         public int compare(Movie a, Movie b)

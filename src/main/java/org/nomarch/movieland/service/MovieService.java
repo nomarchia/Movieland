@@ -15,4 +15,8 @@ public class MovieService {
     public List<Movie> getAll() {
         return movieDao.getAll();
     }
+
+    public List<Movie> getThreeRandom(){
+        return movieDao.getThreeRandomMovies();
+    }
 }
