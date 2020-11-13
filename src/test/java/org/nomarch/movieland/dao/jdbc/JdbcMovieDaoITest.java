@@ -9,7 +9,6 @@ import org.nomarch.movieland.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,7 +45,7 @@ class JdbcMovieDaoITest {
                 .build();
         //when
         List<Movie> actualMovies = jdbcMovieDao.getAll();
-        Collections.sort(actualMovies, new SortById());
+        actualMovies.sort(new SortMovieById());
         //then
         assertEquals(25, actualMovies.size());
         Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
@@ -61,7 +60,7 @@ class JdbcMovieDaoITest {
         assertEquals(3, actualMovies.size());
     }
 
-    class SortById implements Comparator<Movie>
+    class SortMovieById implements Comparator<Movie>
     {
         public int compare(Movie a, Movie b)
         {
