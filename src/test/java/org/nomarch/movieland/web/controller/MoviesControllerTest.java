@@ -80,6 +80,46 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
     }
 
+    @DisplayName("Get three random movies from DB")
+    @Test
+    void getThreeRandom() throws Exception {
+        //prepare
+        when(movieService.getThreeRandom()).thenReturn(expectedMovies);
+
+        //when
+        mockMvc.perform(get("/v1/movie/random"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+
+                .andExpect(jsonPath("$.size()").value(3))
+
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Побег из Шоушенка/The Shawshank Redemption"))
+                .andExpect(jsonPath("$[0].country").value("США"))
+                .andExpect(jsonPath("$[0].year").value(1994))
+                .andExpect(jsonPath("$[0].description").value("Успешный банкир Энди Дюфрейн обвинен в убийстве собственной жены и ее любовника."))
+                .andExpect(jsonPath("$[0].rating").value(8.9))
+                .andExpect(jsonPath("$[0].price").value(123.45))
+                .andExpect(jsonPath("$[0].posterImg").value("https://site.com/img1.jpg"))
+
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].name").value("Зеленая миля/The Green Mile"))
+                .andExpect(jsonPath("$[1].country").value("США"))
+                .andExpect(jsonPath("$[1].year").value(1999))
+                .andExpect(jsonPath("$[1].description").value("Обвиненный в страшном преступлении, Джон Коффи оказывается в блоке смертников тюрьмы «Холодная гора»."))
+                .andExpect(jsonPath("$[1].rating").value(8.9))
+                .andExpect(jsonPath("$[1].price").value(134.67))
+                .andExpect(jsonPath("$[1].posterImg").value("https://site.com/img2.jpg"))
+
+                .andExpect(jsonPath("$[2].id").value(3))
+                .andExpect(jsonPath("$[2].name").value("Форрест Гамп/Forrest Gump"))
+                .andExpect(jsonPath("$[2].country").value("США"))
+                .andExpect(jsonPath("$[2].year").value(1994))
+                .andExpect(jsonPath("$[2].description").value("От лица главного героя Форреста Гампа, слабоумного безобидного человека с благородным и открытым сердцем, рассказывается история его необыкновенной жизни."))
+                .andExpect(jsonPath("$[2].rating").value(8.6))
+                .andExpect(jsonPath("$[2].price").value(200.60))
+                .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
+    }
 
     private void enrichExpectedMovies() {
         expectedMovies = new ArrayList<>();
