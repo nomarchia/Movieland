@@ -60,6 +60,53 @@ class JdbcMovieDaoITest {
         assertEquals(3, actualMovies.size());
     }
 
+    @Test
+    void testGetMoviesByGenre() {
+        //prepare
+        Movie expectedMovieFirst = Movie.builder()
+                .id(3)
+                .name("Форрест Гамп/Forrest Gump")
+                .country("США")
+                .year(1994)
+                .description("От лица главного героя Форреста Гампа, слабоумного безобидного человека с благородным и открытым сердцем, рассказывается история его необыкновенной жизни.Фантастическим образом превращается он в известного футболиста, героя войны, преуспевающего бизнесмена. Он становится миллиардером, но остается таким же бесхитростным, глупым и добрым. Форреста ждет постоянный успех во всем, а он любит девочку, с которой дружил в детстве, но взаимность приходит слишком поздно.")
+                .rating(8.6)
+                .price(200.60)
+                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .build();
+        Movie expectedMovieSecond = Movie.builder()
+                .id(7)
+                .name("Жизнь прекрасна/La vita è bella")
+                .country("Италия")
+                .year(1997)
+                .description("Во время II Мировой войны в Италии в концлагерь были отправлены евреи, отец и его маленький сын. Жена, итальянка, добровольно последовала вслед за ними. В лагере отец сказал сыну, что все происходящее вокруг является очень большой игрой за приз в настоящий танк, который достанется тому мальчику, который сможет не попасться на глаза надзирателям. Он сделал все, чтобы сын поверил в игру и остался жив, прячась в бараке.")
+                .rating(8.2)
+                .price(145.99)
+                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .build();
+        Movie expectedMovieThird = Movie.builder()
+                .id(12)
+                .name("Титаник/Titanic")
+                .country("США")
+                .year(1997)
+                .description("Молодые влюбленные Джек и Роза находят друг друга в первом и последнем плавании «непотопляемого» Титаника. Они не могли знать, что шикарный лайнер столкнется с айсбергом в холодных водах Северной Атлантики, и их страстная любовь превратится в схватку со смертью…")
+                .rating(7.9)
+                .price(150.00)
+                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .build();
+
+        //when
+        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5);
+
+        //then
+        actualMovies.sort(new SortMovieById());
+
+        assertEquals(actualMovies.size(), 3);
+
+        Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
+        Assert.assertTrue(new ReflectionEquals(expectedMovieSecond).matches(actualMovies.get(1)));
+        Assert.assertTrue(new ReflectionEquals(expectedMovieThird).matches(actualMovies.get(2)));
+    }
+
     class SortMovieById implements Comparator<Movie>
     {
         public int compare(Movie a, Movie b)

@@ -18,6 +18,9 @@ public class JdbcMovieDao implements MovieDao {
             "FROM public.movies";
     public static final String GET_RANDOM = "SELECT id, name, country, year, description, rating, price, poster_img " +
             "FROM public.movies ORDER BY RANDOM() LIMIT 3";
+    public static final String GET_MOVIES_BY_GENRE = "SELECT id, name, country, year, description, rating, price, poster_img " +
+            "FROM public.movies INNER JOIN public.movie_to_genre ON (public.movies.id = public.movie_to_genre.movie_id) WHERE public.movie_to_genre.genre_id = ?";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -29,5 +32,11 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public List<Movie> getThreeRandomMovies() {
         return jdbcTemplate.query(GET_RANDOM, MOVIE_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Movie> getMoviesByGenre(Integer genreId) {
+//        return jdbcTemplate.query(GET_MOVIES_BY_GENRE, MOVIE_ROW_MAPPER);
+        return jdbcTemplate.query(GET_MOVIES_BY_GENRE, new Object[] {genreId}, MOVIE_ROW_MAPPER);
     }
 }

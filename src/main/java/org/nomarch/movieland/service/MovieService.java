@@ -19,4 +19,8 @@ public class MovieService {
     public List<Movie> getThreeRandom(){
         return movieDao.getThreeRandomMovies();
     }
+
+    public List<Movie> getMoviesByGenre(Integer genreId) {
+        return movieDao.getMoviesByGenre(genreId);
+    }
 }
