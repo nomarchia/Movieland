@@ -27,7 +27,7 @@ class JdbcGenreDaoITest {
         Genre expectedLast = Genre.builder().id(15).name("вестерн").build();
 
         //when
-        List<Genre> actualGenres = genreDao.getAll();
+        List<Genre> actualGenres = genreDao.getAllGenres();
 
         //then
         assertEquals(15, actualGenres.size());
@@ -35,7 +35,7 @@ class JdbcGenreDaoITest {
         assertEquals(expectedLast, actualGenres.get(14));
     }
 
-    class SortGenreById implements Comparator<Genre>
+    static class SortGenreById implements Comparator<Genre>
     {
         public int compare(Genre a, Genre b)
         {
