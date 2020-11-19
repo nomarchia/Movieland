@@ -1,7 +1,7 @@
 package org.nomarch.movieland.web.controller;
 
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.service.MovieService;
+import org.nomarch.movieland.service.impl.DefaultMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +12,16 @@ import java.util.List;
 @RequestMapping(value = "/v1/movie", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MoviesController {
     @Autowired
-    private MovieService movieService;
+    private DefaultMovieService movieService;
 
     @GetMapping
-    public List<Movie> getAll() {
-        return movieService.getAll();
+    public List<Movie> getAllMovies() {
+        return movieService.getAllMovies();
     }
 
     @GetMapping(value = "/random")
-    public List<Movie> getThreeRandom() {
-        return movieService.getThreeRandom();
+    public List<Movie> getRandomMovies() {
+        return movieService.getRandomMovies();
     }
 
     @GetMapping(value = "/genre/{genreId}")

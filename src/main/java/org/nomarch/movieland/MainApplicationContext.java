@@ -29,4 +29,9 @@ public class MainApplicationContext {
     protected JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
+
+    @Bean
+    protected Integer randomMoviesLimit(@Value("${random.movies.limit}") Integer limit) {
+        return limit;
+    }
 }

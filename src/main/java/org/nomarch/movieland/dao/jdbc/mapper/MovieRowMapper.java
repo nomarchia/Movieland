@@ -11,10 +11,11 @@ public class MovieRowMapper implements RowMapper<Movie> {
     public Movie mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return Movie.builder()
                 .id(resultSet.getInt("id"))
-                .name(resultSet.getString("name"))
+                .nameNative(resultSet.getString("name_native"))
+                .nameRussian(resultSet.getString("name_russian"))
                 .country(resultSet.getString("country"))
                 .year(resultSet.getInt("year"))
-                .description(resultSet.getString("description"))
+//                .description(resultSet.getString("description"))
                 .rating(resultSet.getDouble("rating"))
                 .price(resultSet.getDouble("price"))
                 .posterImg(resultSet.getString("poster_img"))

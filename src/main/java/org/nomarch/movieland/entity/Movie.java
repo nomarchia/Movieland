@@ -8,7 +8,8 @@ import lombok.Data;
 @Builder
 public class Movie {
     private int id;
-    private String name;
+    private String nameNative;
+    private String nameRussian;
     private String country;
     private int year;
     private String description;

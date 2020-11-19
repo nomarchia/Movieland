@@ -14,29 +14,34 @@ import java.util.List;
 @Repository
 public class JdbcMovieDao implements MovieDao {
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
-    private static final String GET_ALL = "SELECT id, name, country, year, description, rating, price, poster_img " +
+    private static final String GET_ALL = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
             "FROM public.movies";
-    public static final String GET_RANDOM = "SELECT id, name, country, year, description, rating, price, poster_img " +
-            "FROM public.movies ORDER BY RANDOM() LIMIT 3";
-    public static final String GET_MOVIES_BY_GENRE = "SELECT id, name, country, year, description, rating, price, poster_img " +
-            "FROM public.movies INNER JOIN public.movie_to_genre ON (public.movies.id = public.movie_to_genre.movie_id) WHERE public.movie_to_genre.genre_id = ?";
+    public static final String GET_RANDOM = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
+            "FROM public.movies ORDER BY RANDOM() LIMIT ";
+    public static final String GET_MOVIES_BY_GENRE = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
+            "FROM public.movies LEFT JOIN public.movie_to_genre ON (public.movies.id = public.movie_to_genre.movie_id) WHERE public.movie_to_genre.genre_id = ?";
+
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private Integer randomMoviesLimit;
 
     @Override
-    public List<Movie> getAll() {
+    public List<Movie> getAllMovies() {
+        log.debug("Get list of all movies from DB");
         return jdbcTemplate.query(GET_ALL, MOVIE_ROW_MAPPER);
     }
 
     @Override
-    public List<Movie> getThreeRandomMovies() {
-        return jdbcTemplate.query(GET_RANDOM, MOVIE_ROW_MAPPER);
+    public List<Movie> getRandomMovies() {
+        log.debug("Get 3 random movies from DB");
+        return jdbcTemplate.query(GET_RANDOM + randomMoviesLimit, MOVIE_ROW_MAPPER);
     }
 
     @Override
     public List<Movie> getMoviesByGenre(Integer genreId) {
-//        return jdbcTemplate.query(GET_MOVIES_BY_GENRE, MOVIE_ROW_MAPPER);
+        log.debug("Get list of movies by genre if from DB");
         return jdbcTemplate.query(GET_MOVIES_BY_GENRE, new Object[] {genreId}, MOVIE_ROW_MAPPER);
     }
 }
