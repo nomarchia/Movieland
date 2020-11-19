@@ -1,26 +1,13 @@
 package org.nomarch.movieland.service;
 
-import org.nomarch.movieland.dao.MovieDao;
 import org.nomarch.movieland.entity.Movie;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class MovieService {
-    @Autowired
-    private MovieDao movieDao;
+public interface MovieService {
+    public List<Movie> getAllMovies();
 
-    public List<Movie> getAll() {
-        return movieDao.getAll();
-    }
+    public List<Movie> getRandomMovies();
 
-    public List<Movie> getThreeRandom(){
-        return movieDao.getThreeRandomMovies();
-    }
-
-    public List<Movie> getMoviesByGenre(Integer genreId) {
-        return movieDao.getMoviesByGenre(genreId);
-    }
+    public List<Movie> getMoviesByGenre(Integer genreId);
 }
