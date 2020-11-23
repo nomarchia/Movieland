@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.MovieDao;
 import org.nomarch.movieland.dao.jdbc.mapper.MovieRowMapper;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.web.util.SortingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,9 +29,10 @@ public class JdbcMovieDao implements MovieDao {
     private Integer randomMoviesLimit;
 
     @Override
-    public List<Movie> getAllMovies() {
+    public List<Movie> getAllMovies(SortingUtil sortingUtil) {
         log.debug("Get list of all movies from DB");
-        return jdbcTemplate.query(GET_ALL, MOVIE_ROW_MAPPER);
+        String query = sortingUtil.appendSortingOrder(GET_ALL);
+        return jdbcTemplate.query(query, MOVIE_ROW_MAPPER);
     }
 
     @Override
@@ -40,8 +42,9 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(Integer genreId) {
+    public List<Movie> getMoviesByGenre(Integer genreId, SortingUtil sortingUtil) {
         log.debug("Get list of movies by genre if from DB");
-        return jdbcTemplate.query(GET_MOVIES_BY_GENRE, new Object[] {genreId}, MOVIE_ROW_MAPPER);
+        String query = sortingUtil.appendSortingOrder(GET_MOVIES_BY_GENRE);
+        return jdbcTemplate.query(query, new Object[] {genreId}, MOVIE_ROW_MAPPER);
     }
 }
