@@ -13,11 +13,6 @@ public class SortingUtil {
     private String name;
     private SortingOrder sortingOrder;
 
-    public void configure(@NonNull String name, @NonNull SortingOrder sortingOrder) {
-        this.name = name;
-        this.sortingOrder = sortingOrder;
-    }
-
     public String appendSortingOrder(@NonNull String query) {
         if (Objects.nonNull(name) && Objects.nonNull(sortingOrder) ) {
             return query + " ORDER BY " + name + " " + sortingOrder.getOrder();
@@ -25,16 +20,15 @@ public class SortingUtil {
         return query;
     }
 
-    SortingUtil parseSortingParams(String rating, String price) {
+    public SortingUtil parseSortingParams(String rating, String price) {
         log.debug("Parsing sorting params");
-        SortingUtil sortingUtil = new SortingUtil();
         if (rating != null) {
-            this.setName("rating");
-            this.setSortingOrder(SortingOrder.valueOf(rating.toUpperCase()));
+            this.name = "rating";
+            this.sortingOrder = SortingOrder.valueOf(rating.toUpperCase());
             log.debug("Parsed movies order by rating " + rating);
         } else if (price != null) {
-            this.setName("price");
-            this.setSortingOrder(SortingOrder.valueOf(price.toUpperCase()));
+            this.name = "price";
+            this.sortingOrder = SortingOrder.valueOf(price.toUpperCase());
             log.debug("Parsed movies order by price " + price);
         }
         return this;

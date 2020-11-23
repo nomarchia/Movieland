@@ -19,9 +19,9 @@ public class MoviesController {
     private DefaultMovieService movieService;
 
     @GetMapping
-    public List<Movie> getAllMovies(@RequestParam String rating, @RequestParam String price) {
+    public List<Movie> getAllMovies(@RequestParam(required = false) String rating, @RequestParam(required = false) String price) {
         log.debug("Get request by url \"/v1/movie\"");
-        SortingUtil sortingUtil = parseSortingParams(rating, price);
+        SortingUtil sortingUtil = new SortingUtil().parseSortingParams(rating, price);
         return movieService.getAllMovies(sortingUtil);
     }
 
@@ -33,26 +33,26 @@ public class MoviesController {
     }
 
     @GetMapping(value = "/genre/{genreId}")
-    public List<Movie> getMoviesByGenre(@PathVariable Integer genreId, @RequestParam String rating, @RequestParam String price) {
+    public List<Movie> getMoviesByGenre(@PathVariable Integer genreId, @RequestParam(required = false) String rating, @RequestParam(required = false) String price) {
         log.debug("Get request by url \"/v1/movie/genre/\"" + genreId);
-        SortingUtil sortingUtil = parseSortingParams(rating, price);
+        SortingUtil sortingUtil = new SortingUtil().parseSortingParams(rating, price);
 
         return movieService.getMoviesByGenre(genreId, sortingUtil);
     }
 
     //package-private for tests
-    SortingUtil parseSortingParams(String rating, String price) {
-        log.debug("Parsing sorting params");
-        SortingUtil sortingUtil = new SortingUtil();
-        if (rating != null) {
-            sortingUtil.setName("rating");
-            sortingUtil.setSortingOrder(SortingOrder.valueOf(rating.toUpperCase()));
-            log.debug("Parsed movies order by rating " + rating);
-        } else if (price != null) {
-            sortingUtil.setName("price");
-            sortingUtil.setSortingOrder(SortingOrder.valueOf(price.toUpperCase()));
-            log.debug("Parsed movies order by price " + price);
-        }
-        return sortingUtil;
-    }
+//    SortingUtil parseSortingParams(String rating, String price) {
+//        log.debug("Parsing sorting params");
+//        SortingUtil sortingUtil = new SortingUtil();
+//        if (rating != null) {
+//            sortingUtil.setName("rating");
+//            sortingUtil.setSortingOrder(SortingOrder.valueOf(rating.toUpperCase()));
+//            log.debug("Parsed movies order by rating " + rating);
+//        } else if (price != null) {
+//            sortingUtil.setName("price");
+//            sortingUtil.setSortingOrder(SortingOrder.valueOf(price.toUpperCase()));
+//            log.debug("Parsed movies order by price " + price);
+//        }
+//        return sortingUtil;
+//    }
 }

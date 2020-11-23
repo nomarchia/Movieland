@@ -21,7 +21,8 @@ class SortingUtilTest {
     void appendSortingOrder() {
         //prepare
         SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.configure("rating", SortingOrder.ASC);
+        sortingUtil.setName("rating");
+        sortingUtil.setSortingOrder(SortingOrder.ASC);
         //when
         String actual = sortingUtil.appendSortingOrder("SELECT id, name FROM table");
         //then
@@ -32,7 +33,8 @@ class SortingUtilTest {
     void appendSortingOrderToNullQuery() {
         //prepare
         SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.configure("rating", SortingOrder.ASC);
+        sortingUtil.setName("rating");
+        sortingUtil.setSortingOrder(SortingOrder.ASC);
         //when
         assertThrows(NullPointerException.class, () -> {
             String actual = sortingUtil.appendSortingOrder(null);

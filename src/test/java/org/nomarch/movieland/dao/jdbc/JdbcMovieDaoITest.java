@@ -61,7 +61,8 @@ class JdbcMovieDaoITest {
     void testGetAllMoviesSortByRatingAsc() {
         //prepare
         SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.configure("rating", SortingOrder.ASC);
+        sortingUtil.setName("rating");
+        sortingUtil.setSortingOrder(SortingOrder.ASC);
 
         //when
         List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
@@ -77,7 +78,8 @@ class JdbcMovieDaoITest {
     void testGetAllMoviesSortByRatingDesc() {
         //prepare
         SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.configure("rating", SortingOrder.DESC);
+        sortingUtil.setName("rating");
+        sortingUtil.setSortingOrder(SortingOrder.DESC);
 
         //when
         List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
@@ -162,7 +164,8 @@ class JdbcMovieDaoITest {
     void testGetMoviesByGenreOrderByPriceAsc() {
         //prepare
         SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.configure("price", SortingOrder.ASC);
+        sortingUtil.setName("price");
+        sortingUtil.setSortingOrder(SortingOrder.ASC);
         //when
         List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, sortingUtil);
 
@@ -177,7 +180,8 @@ class JdbcMovieDaoITest {
     @Test
     void testGetMoviesByGenreOrderByPriceDesc() {
         SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.configure("price", SortingOrder.DESC);
+        sortingUtil.setName("price");
+        sortingUtil.setSortingOrder(SortingOrder.DESC);
         //when
         List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, sortingUtil);
 
