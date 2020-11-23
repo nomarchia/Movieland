@@ -39,20 +39,4 @@ public class MoviesController {
 
         return movieService.getMoviesByGenre(genreId, sortingUtil);
     }
-
-    //package-private for tests
-//    SortingUtil parseSortingParams(String rating, String price) {
-//        log.debug("Parsing sorting params");
-//        SortingUtil sortingUtil = new SortingUtil();
-//        if (rating != null) {
-//            sortingUtil.setName("rating");
-//            sortingUtil.setSortingOrder(SortingOrder.valueOf(rating.toUpperCase()));
-//            log.debug("Parsed movies order by rating " + rating);
-//        } else if (price != null) {
-//            sortingUtil.setName("price");
-//            sortingUtil.setSortingOrder(SortingOrder.valueOf(price.toUpperCase()));
-//            log.debug("Parsed movies order by price " + price);
-//        }
-//        return sortingUtil;
-//    }
 }
