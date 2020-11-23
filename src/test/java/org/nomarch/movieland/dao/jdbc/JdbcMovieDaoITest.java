@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.nomarch.movieland.MainApplicationContext;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.entity.SortingOrder;
+import org.nomarch.movieland.web.util.SortingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -45,13 +47,45 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getAllMovies();
+        List<Movie> actualMovies = jdbcMovieDao.getAllMovies(new SortingUtil());
         actualMovies.sort(new SortMovieById());
 
         //then
         assertEquals(25, actualMovies.size());
         Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
         Assert.assertTrue(new ReflectionEquals(expectedMovieLast).matches(actualMovies.get(24)));
+    }
+
+    @DisplayName("Get all movies order by rating Asc")
+    @Test
+    void testGetAllMoviesSortByRatingAsc() {
+        //prepare
+        SortingUtil sortingUtil = new SortingUtil();
+        sortingUtil.configure("rating", SortingOrder.ASC);
+
+        //when
+        List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
+
+        //then
+        assertEquals(25, actualMovies.size());
+        assertEquals(7.6, actualMovies.get(0).getRating());
+        assertEquals(8.9, actualMovies.get(24).getRating());
+    }
+
+    @DisplayName("Get all movies order by rating Desc")
+    @Test
+    void testGetAllMoviesSortByRatingDesc() {
+        //prepare
+        SortingUtil sortingUtil = new SortingUtil();
+        sortingUtil.configure("rating", SortingOrder.DESC);
+
+        //when
+        List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
+
+        //then
+        assertEquals(25, actualMovies.size());
+        assertEquals(8.9, actualMovies.get(0).getRating());
+        assertEquals(7.6, actualMovies.get(24).getRating());
     }
 
     @DisplayName("Get three random movies from DB")
@@ -111,7 +145,7 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5);
+        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, new SortingUtil());
 
         //then
         actualMovies.sort(new SortMovieById());
@@ -123,14 +157,46 @@ class JdbcMovieDaoITest {
         Assert.assertTrue(new ReflectionEquals(expectedMovieThird).matches(actualMovies.get(2)));
     }
 
+    @DisplayName("Get movies by genre order by price Asc")
+    @Test
+    void testGetMoviesByGenreOrderByPriceAsc() {
+        //prepare
+        SortingUtil sortingUtil = new SortingUtil();
+        sortingUtil.configure("price", SortingOrder.ASC);
+        //when
+        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, sortingUtil);
+
+        //then
+        assertEquals(actualMovies.size(), 3);
+        assertEquals(145.99, actualMovies.get(0).getPrice());
+        assertEquals(150.00, actualMovies.get(1).getPrice());
+        assertEquals(200.6, actualMovies.get(2).getPrice());
+    }
+
+    @DisplayName("Get movies by genre order by price Desc")
+    @Test
+    void testGetMoviesByGenreOrderByPriceDesc() {
+        SortingUtil sortingUtil = new SortingUtil();
+        sortingUtil.configure("price", SortingOrder.DESC);
+        //when
+        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, sortingUtil);
+
+        //then
+        assertEquals(actualMovies.size(), 3);
+        assertEquals(200.6, actualMovies.get(0).getPrice());
+        assertEquals(150.00, actualMovies.get(1).getPrice());
+        assertEquals(145.99, actualMovies.get(2).getPrice());
+    }
+
     @DisplayName("Get movies by non-existing genre id")
     @Test
     public void testGetMoviesByGenreOutOfRange() {
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(17);
+        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(17, new SortingUtil());
 
         //then
         assertEquals(0, actualMovies.size());
+
     }
 
     static class SortMovieById implements Comparator<Movie>
