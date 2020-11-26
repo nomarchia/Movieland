@@ -11,13 +11,11 @@ import org.nomarch.movieland.service.impl.DefaultMovieService;
 import org.nomarch.movieland.web.util.SortingUtil;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -163,16 +161,6 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].rating").value(8.6))
                 .andExpect(jsonPath("$[2].price").value(200.60))
                 .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
-    }
-
-    @DisplayName("Test get all movies sorted by rating")
-    public void testGetAllMoviesSortByRating() {
-
-    }
-
-    @DisplayName("Test get all movies sorted by price")
-    public void testGetAllMoviesSortByPrice() {
-
     }
 
     private void enrichExpectedMovies() {

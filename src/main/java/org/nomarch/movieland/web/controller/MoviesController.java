@@ -2,7 +2,6 @@ package org.nomarch.movieland.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.entity.SortingOrder;
 import org.nomarch.movieland.service.impl.DefaultMovieService;
 import org.nomarch.movieland.web.util.SortingUtil;
 import org.springframework.beans.factory.annotation.Autowired;

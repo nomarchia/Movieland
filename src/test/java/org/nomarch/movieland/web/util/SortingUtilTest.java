@@ -36,8 +36,6 @@ class SortingUtilTest {
         sortingUtil.setName("rating");
         sortingUtil.setSortingOrder(SortingOrder.ASC);
         //when
-        assertThrows(NullPointerException.class, () -> {
-            String actual = sortingUtil.appendSortingOrder(null);
-        });
+        assertThrows(NullPointerException.class, () -> sortingUtil.appendSortingOrder(null));
     }
 }
