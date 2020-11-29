@@ -20,7 +20,7 @@ public class MoviesController {
     @GetMapping
     public List<Movie> getAllMovies(@RequestParam(required = false) String rating, @RequestParam(required = false) String price) {
         log.debug("Get request by url \"/v1/movie\"");
-        SortingUtil sortingUtil = new SortingUtil().parseSortingParams(rating, price);
+        SortingUtil sortingUtil = new SortingUtil().parseRawSortingParams(rating, price);
         return movieService.getAllMovies(sortingUtil);
     }
 
@@ -34,7 +34,7 @@ public class MoviesController {
     @GetMapping(value = "/genre/{genreId}")
     public List<Movie> getMoviesByGenre(@PathVariable Integer genreId, @RequestParam(required = false) String rating, @RequestParam(required = false) String price) {
         log.debug("Get request by url \"/v1/movie/genre/\"" + genreId);
-        SortingUtil sortingUtil = new SortingUtil().parseSortingParams(rating, price);
+        SortingUtil sortingUtil = new SortingUtil().parseRawSortingParams(rating, price);
 
         return movieService.getMoviesByGenre(genreId, sortingUtil);
     }
