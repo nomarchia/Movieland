@@ -1,6 +1,6 @@
 package org.nomarch.movieland.dao.jdbc;
 
-import org.nomarch.movieland.MainApplicationContext;
+import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringJUnitWebConfig(MainApplicationContext.class)
+@SpringJUnitWebConfig(TestContext.class)
 class JdbcGenreDaoITest {
     @Autowired
     private GenreDao genreDao;

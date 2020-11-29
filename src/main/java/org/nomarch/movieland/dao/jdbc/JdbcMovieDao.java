@@ -6,6 +6,7 @@ import org.nomarch.movieland.dao.jdbc.mapper.MovieRowMapper;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.web.util.SortingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,7 @@ public class JdbcMovieDao implements MovieDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
+    @Value("${random.movies.limit}")
     private Integer randomMoviesLimit;
 
     @Override

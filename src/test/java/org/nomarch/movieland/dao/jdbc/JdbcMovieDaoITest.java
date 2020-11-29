@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.nomarch.movieland.MainApplicationContext;
+import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.entity.SortingOrder;
 import org.nomarch.movieland.web.util.SortingUtil;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitWebConfig (MainApplicationContext.class)
+@SpringJUnitWebConfig (TestContext.class)
 class JdbcMovieDaoITest {
     @Autowired
     private JdbcMovieDao jdbcMovieDao;
