@@ -1,9 +1,14 @@
 package org.nomarch.movieland.dao.jdbc;
 
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.core.api.configuration.Orthography;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.junit5.api.DBRider;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
+import org.nomarch.movieland.MainApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.entity.SortingOrder;
@@ -16,7 +21,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitWebConfig (TestContext.class)
+@DBRider
+@DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringJUnitWebConfig(value = {TestContext.class, MainApplicationContext.class})
+@DataSet(value = {"movies.xml", "genres.xml", "movie_to_genre.xml"})
 class JdbcMovieDaoITest {
     @Autowired
     private JdbcMovieDao jdbcMovieDao;
@@ -33,17 +41,17 @@ class JdbcMovieDaoITest {
                 .year(1994)
                 .rating(8.9)
                 .price(123.45)
-                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .posterImg("image1.jpg")
                 .build();
         Movie expectedMovieLast = Movie.builder()
-                .id(25)
+                .id(5)
                 .nameNative("Dances with Wolves")
                 .nameRussian("Танцующий с волками")
                 .country("США, Великобритания")
                 .year(1990)
                 .rating(8.00)
                 .price(120.55)
-                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .posterImg("image5.jpg")
                 .build();
 
         //when
@@ -51,9 +59,9 @@ class JdbcMovieDaoITest {
         actualMovies.sort(new SortMovieById());
 
         //then
-        assertEquals(25, actualMovies.size());
+        assertEquals(5, actualMovies.size());
         Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
-        Assert.assertTrue(new ReflectionEquals(expectedMovieLast).matches(actualMovies.get(24)));
+        Assert.assertTrue(new ReflectionEquals(expectedMovieLast).matches(actualMovies.get(4)));
     }
 
     @DisplayName("Get all movies order by rating Asc")
@@ -68,9 +76,9 @@ class JdbcMovieDaoITest {
         List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
 
         //then
-        assertEquals(25, actualMovies.size());
-        assertEquals(7.6, actualMovies.get(0).getRating());
-        assertEquals(8.9, actualMovies.get(24).getRating());
+        assertEquals(5, actualMovies.size());
+        assertEquals(7.9, actualMovies.get(0).getRating());
+        assertEquals(8.9, actualMovies.get(4).getRating());
     }
 
     @DisplayName("Get all movies order by rating Desc")
@@ -85,9 +93,9 @@ class JdbcMovieDaoITest {
         List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
 
         //then
-        assertEquals(25, actualMovies.size());
+        assertEquals(5, actualMovies.size());
         assertEquals(8.9, actualMovies.get(0).getRating());
-        assertEquals(7.6, actualMovies.get(24).getRating());
+        assertEquals(7.9, actualMovies.get(4).getRating());
     }
 
     @DisplayName("Get three random movies from DB")
@@ -116,34 +124,34 @@ class JdbcMovieDaoITest {
     void testGetMoviesByGenre() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
-                .id(3)
+                .id(2)
                 .nameNative("Forrest Gump")
                 .nameRussian("Форрест Гамп")
                 .country("США")
                 .year(1994)
                 .rating(8.6)
                 .price(200.60)
-                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .posterImg("image2.jpg")
                 .build();
         Movie expectedMovieSecond = Movie.builder()
-                .id(7)
+                .id(3)
                 .nameNative("La vita è bella")
                 .nameRussian("Жизнь прекрасна")
                 .country("Италия")
                 .year(1997)
                 .rating(8.2)
                 .price(145.99)
-                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .posterImg("image3.jpg")
                 .build();
         Movie expectedMovieThird = Movie.builder()
-                .id(12)
+                .id(4)
                 .nameNative("Titanic")
                 .nameRussian("Титаник")
                 .country("США")
                 .year(1997)
                 .rating(7.9)
                 .price(150.00)
-                .posterImg("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")
+                .posterImg("image4.jpg")
                 .build();
 
         //when
