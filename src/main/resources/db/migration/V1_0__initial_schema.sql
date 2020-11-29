@@ -25,7 +25,7 @@ CREATE TABLE movies (
 );
 
 CREATE TABLE movie_to_genre (
-    id SERIAL PRIMARY KEY,
+    column_id SERIAL PRIMARY KEY,
     movie_id INTEGER NOT NULL,
     genre_id INTEGER NOT NULL,
     CONSTRAINT FK_movie_id FOREIGN KEY (movie_id) REFERENCES movies(id),
@@ -36,7 +36,7 @@ CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
     movie_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    review TEXT
+    review TEXT,
     CONSTRAINT FK_movie_id FOREIGN KEY (movie_id) REFERENCES movies(id),
     CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 );

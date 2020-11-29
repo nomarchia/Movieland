@@ -10,8 +10,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:test.application.properties")
-@ComponentScan("org.nomarch.movieland")
+@PropertySource("classpath:application.properties")
 public class TestContext {
     @Value("${postgres.image.name}")
     String imageName;
@@ -20,7 +19,7 @@ public class TestContext {
 
     @Bean
     @Primary
-    protected DataSource dataSource() {
+    DataSource createDataSource() {
         PostgreSQLContainer POSTGRESQL_CONTAINER =
                 new PostgreSQLContainer (imageName);
         POSTGRESQL_CONTAINER.start();
@@ -35,7 +34,7 @@ public class TestContext {
     }
 
     @Bean
-    protected JdbcTemplate jdbcTemplate(DataSource dataSource) {
+    JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 }
