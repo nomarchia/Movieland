@@ -1,5 +1,6 @@
 package org.nomarch.movieland.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
 
@@ -11,15 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class DefaultGenreService implements GenreService {
     @Autowired
     private GenreDao genreDao;
     private List<Genre> genresCache;
-
-//    public DefaultGenreService() {
-//        updateGenresCache();
-//    }
 
     @Override
     public List<Genre> getAllGenres() {
@@ -30,11 +28,13 @@ public class DefaultGenreService implements GenreService {
     }
 
     @Override
-    @Scheduled(fixedRateString = "${cache.renew.interval}", fixedDelayString = "${cache.init.delay}")
+    @Scheduled(fixedRateString = "${cache.renew.interval}"/*, fixedDelayString = "${cache.init.delay}"*/)
     public void updateGenresCache() {
         if (Objects.nonNull(genresCache)) {
+            log.debug("Clearing genres cache");
             genresCache.clear();
         }
+        log.debug("Updating genres cache from DB");
         genresCache = genreDao.getAllGenres();
     }
 }
