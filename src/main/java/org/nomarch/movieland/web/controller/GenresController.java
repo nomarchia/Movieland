@@ -12,13 +12,13 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(path = "/v1/genre", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1/genre", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GenresController {
     @Autowired
     private DefaultGenreService genreService;
 
     @GetMapping
-    public List<Genre> getAllGenres() {
-        return genreService.getAllGenres();
+    public List<Genre> getAll() {
+        return genreService.findAll();
     }
 }

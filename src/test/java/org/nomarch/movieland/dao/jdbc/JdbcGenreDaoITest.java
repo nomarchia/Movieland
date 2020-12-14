@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import org.nomarch.movieland.MainApplicationContext;
+import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
@@ -21,33 +21,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, MainApplicationContext.class})
+@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
 class JdbcGenreDaoITest {
     @Autowired
     private GenreDao genreDao;
 
     @DisplayName("Get all genres from DB")
     @Test
-    @DataSet("genres.xml")
+    @DataSet(value = {"genres.xml", "movies.xml", "movie_to_genre.xml"})
     void testGetAll() {
         //prepare
         Genre expectedFirst = Genre.builder().id(1).name("драма").build();
         Genre expectedLast = Genre.builder().id(5).name("мелодрама").build();
 
         //when
-        List<Genre> actualGenres = genreDao.getAllGenres();
+        List<Genre> actualGenres = genreDao.findAll();
 
         //then
         assertEquals(5, actualGenres.size());
         assertEquals(expectedFirst, actualGenres.get(0));
         assertEquals(expectedLast, actualGenres.get(4));
-    }
-
-    static class SortGenreById implements Comparator<Genre>
-    {
-        public int compare(Genre a, Genre b)
-        {
-            return a.getId() - b.getId();
-        }
     }
 }

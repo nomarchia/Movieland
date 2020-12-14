@@ -20,7 +20,7 @@ public class JdbcGenreDao implements GenreDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Genre> getAllGenres() {
+    public List<Genre> findAll() {
         log.debug("Getting all genres from DB");
         return jdbcTemplate.query(GET_ALL, GENRE_ROW_MAPPER);
     }

@@ -34,7 +34,7 @@ class GenresControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(genresController).build();
     }
 
-    @DisplayName("Get all genres by get(/v1/genre) request")
+    @DisplayName("Get all genres by get(/api/v1/genre) request")
     @Test
     void testGetAll() throws Exception {
         //prepare
@@ -43,10 +43,12 @@ class GenresControllerTest {
         expectedGenres.add(Genre.builder().id(2).name("криминал").build());
         expectedGenres.add(Genre.builder().id(3).name("фэнтези").build());
 
-        when(genreService.getAllGenres()).thenReturn(expectedGenres);
+        when(genreService.findAll())
+                .thenReturn(expectedGenres);
+
 
         //when
-        mockMvc.perform(get("/v1/genre"))
+        mockMvc.perform(get("/api/v1/genre"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
 
