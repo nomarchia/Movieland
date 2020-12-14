@@ -29,6 +29,8 @@
 
     <root level="INFO">
         <appender-ref ref="STD_OUT"/>
+    </root>
+    <root level="DEBUG">
         <appender-ref ref="FILE"/>
     </root>
 </configuration>
