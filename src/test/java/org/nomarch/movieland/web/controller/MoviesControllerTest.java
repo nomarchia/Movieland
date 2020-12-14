@@ -1,26 +1,25 @@
 package org.nomarch.movieland.web.controller;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.impl.DefaultMovieService;
-import org.nomarch.movieland.web.util.SortingUtil;
+import org.nomarch.movieland.entity.MovieRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.TestInstance.Lifecycle.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-
+@TestInstance(PER_CLASS)
 class MoviesControllerTest {
     @Mock
     private DefaultMovieService movieService;
@@ -32,22 +31,25 @@ class MoviesControllerTest {
     private List<Movie> expectedMovies;
 
 
+    @BeforeAll
+    public void setUpExpectedResults() {
+        expectedMovies = createExpectedMovies();
+    }
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(moviesController).build();
-
-        enrichExpectedMovies();
     }
 
-    @DisplayName("Get all movies by get(/v1/movie) request")
+    @DisplayName("Get all movies by get(/api/v1/movie) request")
     @Test
     void testGetAll() throws Exception {
         //prepare
-        when(movieService.getAllMovies(any(SortingUtil.class))).thenReturn(expectedMovies);
+        when(movieService.findAll(any(MovieRequest.class))).thenReturn(expectedMovies);
 
         //when
-        mockMvc.perform(get("/v1/movie"))
+        mockMvc.perform(get("/api/v1/movie"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
 
@@ -81,14 +83,14 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
     }
 
-    @DisplayName("Get three random movies by get(/v1/movie/random) request")
+    @DisplayName("Get three random movies by get(/api/v1/movie/random) request")
     @Test
     void testGetThreeRandom() throws Exception {
         //prepare
-        when(movieService.getRandomMovies()).thenReturn(expectedMovies);
+        when(movieService.findRandom()).thenReturn(expectedMovies);
 
         //when
-        mockMvc.perform(get("/v1/movie/random"))
+        mockMvc.perform(get("/api/v1/movie/random"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
 
@@ -122,14 +124,14 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
     }
 
-    @DisplayName("Get Movies by Genre by get(/v1/movie/genre/{genreId}) request")
+    @DisplayName("Get Movies by Genre by get(/api/v1/movie/genre/{genreId}) request")
     @Test
     void testGetMoviesByGenre() throws Exception {
         //prepare
-        when(movieService.getMoviesByGenre(1, new SortingUtil())).thenReturn(expectedMovies);
+        when(movieService.findByGenre(1, new MovieRequest())).thenReturn(expectedMovies);
 
         //when
-        mockMvc.perform(get("/v1/movie/genre/1"))
+        mockMvc.perform(get("/api/v1/movie/genre/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
 
@@ -163,7 +165,7 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
     }
 
-    private void enrichExpectedMovies() {
+    private List<Movie> createExpectedMovies() {
         expectedMovies = new ArrayList<>();
         expectedMovies.add(Movie.builder().id(1).nameNative("The Shawshank Redemption").nameRussian("Побег из Шоушенка").country("США")
                 .year(1994).rating(8.9).price(123.45).posterImg("https://site.com/img1.jpg").build());
@@ -171,5 +173,7 @@ class MoviesControllerTest {
                 .year(1999).rating(8.9).price(134.67).posterImg("https://site.com/img2.jpg").build());
         expectedMovies.add(Movie.builder().id(3).nameNative("Forrest Gump").nameRussian("Форрест Гамп").country("США")
                 .year(1994).rating(8.6).price(200.60).posterImg("https://site.com/img3.jpg").build());
+
+        return expectedMovies;
     }
 }

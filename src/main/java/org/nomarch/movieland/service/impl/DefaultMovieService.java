@@ -4,8 +4,9 @@ import lombok.NonNull;
 import org.nomarch.movieland.dao.MovieDao;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.MovieService;
-import org.nomarch.movieland.web.util.SortingUtil;
+import org.nomarch.movieland.entity.MovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,19 +15,21 @@ import java.util.List;
 public class DefaultMovieService implements MovieService {
     @Autowired
     private MovieDao movieDao;
+    @Value("${random.movies.amount:3}")
+    private Integer moviesAmount;
 
     @Override
-    public List<Movie> getAllMovies(@NonNull SortingUtil sortingUtil) {
-        return movieDao.getAllMovies(sortingUtil);
+    public List<Movie> findAll(@NonNull MovieRequest movieRequest) {
+        return movieDao.findAll(movieRequest);
     }
 
     @Override
-    public List<Movie> getRandomMovies(){
-        return movieDao.getRandomMovies();
+    public List<Movie> findRandom(){
+        return movieDao.findRandom(moviesAmount);
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(@NonNull Integer genreId, @NonNull SortingUtil sortingUtil) {
-        return movieDao.getMoviesByGenre(genreId, sortingUtil);
+    public List<Movie> findByGenre(@NonNull Integer genreId, @NonNull MovieRequest movieRequest) {
+        return movieDao.findByGenre(genreId, movieRequest);
     }
 }

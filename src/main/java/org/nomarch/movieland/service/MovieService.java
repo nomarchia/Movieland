@@ -2,14 +2,14 @@ package org.nomarch.movieland.service;
 
 import lombok.NonNull;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.web.util.SortingUtil;
+import org.nomarch.movieland.entity.MovieRequest;
 
 import java.util.List;
 
 public interface MovieService {
-    List<Movie> getAllMovies(@NonNull SortingUtil sortingUtil);
+    List<Movie> findAll(MovieRequest movieRequest);
 
-    List<Movie> getRandomMovies();
+    List<Movie> findRandom();
 
-    List<Movie> getMoviesByGenre(@NonNull Integer genreId, @NonNull SortingUtil sortingUtil);
+    List<Movie> findByGenre(Integer genreId, MovieRequest movieRequest);
 }

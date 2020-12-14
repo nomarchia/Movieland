@@ -15,7 +15,6 @@ public class MovieRowMapper implements RowMapper<Movie> {
                 .nameRussian(resultSet.getString("name_russian"))
                 .country(resultSet.getString("country"))
                 .year(resultSet.getInt("year"))
-//                .description(resultSet.getString("description"))
                 .rating(resultSet.getDouble("rating"))
                 .price(resultSet.getDouble("price"))
                 .posterImg(resultSet.getString("poster_img"))
