@@ -1,19 +1,18 @@
-package org.nomarch.movieland.web.util;
+package org.nomarch.movieland.entity;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.nomarch.movieland.entity.SortingOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SortingUtilTest {
+class MovieRequestTest {
     @DisplayName("Test appendSortingOrder(String query) is SortingUtil's fields aren't initialized")
     @Test
     void testAppendIfSortingUtilNotConfigured() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
+        MovieRequest movieRequest = new MovieRequest();
         //when
-        String returnedQuery = sortingUtil.appendSortingOrder("SELECT id, name FROM table");
+        String returnedQuery = movieRequest.appendSortingOrder("SELECT id, name FROM table");
         assertNotNull(returnedQuery);
         assertEquals("SELECT id, name FROM table", returnedQuery);
     }
@@ -22,11 +21,11 @@ class SortingUtilTest {
     @Test
     void testAppendSortingOrder() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.setName("rating");
-        sortingUtil.setSortingOrder(SortingOrder.ASC);
+        MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setSortingFieldName("rating");
+        movieRequest.setSortingOrder(SortingOrder.ASC);
         //when
-        String returnedQuery = sortingUtil.appendSortingOrder("SELECT id, name FROM table");
+        String returnedQuery = movieRequest.appendSortingOrder("SELECT id, name FROM table");
         //then
         assertEquals("SELECT id, name FROM table ORDER BY rating ASC", returnedQuery);
     }
@@ -35,46 +34,46 @@ class SortingUtilTest {
     @Test
     void appendSortingOrderToNullQuery() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.setName("rating");
-        sortingUtil.setSortingOrder(SortingOrder.ASC);
+        MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setSortingFieldName("rating");
+        movieRequest.setSortingOrder(SortingOrder.ASC);
         //when
-        assertThrows(NullPointerException.class, () -> sortingUtil.appendSortingOrder(null));
+        assertThrows(NullPointerException.class, () -> movieRequest.appendSortingOrder(null));
     }
 
     @DisplayName("Test parseSortingParams(String rating, String price)")
     @Test
     void testParseSortingParamForRatingAsc() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
+        MovieRequest movieRequest = new MovieRequest();
         //when
-        sortingUtil.parseRawSortingParams("asc", null);
+        movieRequest.parseRawSortingParams("asc", null);
         //then
-        assertEquals("rating", sortingUtil.getName());
-        assertEquals(SortingOrder.ASC, sortingUtil.getSortingOrder());
+        assertEquals("rating", movieRequest.getSortingFieldName());
+        assertEquals(SortingOrder.ASC, movieRequest.getSortingOrder());
     }
 
     @DisplayName("Test parseSortingParams(String rating, String price)")
     @Test
     void testParseSortingParamForPriceDesc() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
+        MovieRequest movieRequest = new MovieRequest();
         //when
-        sortingUtil.parseRawSortingParams(null, "desc");
+        movieRequest.parseRawSortingParams(null, "desc");
         //then
-        assertEquals("price", sortingUtil.getName());
-        assertEquals(SortingOrder.DESC, sortingUtil.getSortingOrder());
+        assertEquals("price", movieRequest.getSortingFieldName());
+        assertEquals(SortingOrder.DESC, movieRequest.getSortingOrder());
     }
 
     @DisplayName("Test parseSortingParams(rating, price) when both param values are initiated")
     @Test
     void testParseSortingBothSortingParamsHaveValues() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
+        MovieRequest movieRequest = new MovieRequest();
         //when
-        sortingUtil = sortingUtil.parseRawSortingParams("asc", "desc");
+        movieRequest = movieRequest.parseRawSortingParams("asc", "desc");
         //then
-        assertNull(sortingUtil.getName());
-        assertNull(sortingUtil.getSortingOrder());
+        assertNull(movieRequest.getSortingFieldName());
+        assertNull(movieRequest.getSortingOrder());
     }
 }

@@ -20,16 +20,17 @@ public class TestContext {
     @Bean
     @Primary
     DataSource createDataSource() {
-        PostgreSQLContainer POSTGRESQL_CONTAINER =
-                new PostgreSQLContainer (imageName);
-        POSTGRESQL_CONTAINER.start();
+        PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer (imageName);
+        postgreSQLContainer.start();
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUser(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
+        dataSource.setUrl(postgreSQLContainer.getJdbcUrl());
+        dataSource.setUser(postgreSQLContainer.getUsername());
+        dataSource.setPassword(postgreSQLContainer.getPassword());
 
-        Flyway flyway = Flyway.configure().dataSource(dataSource).locations(migrationSchemaLocation).load();
+        Flyway flyway = Flyway.configure().dataSource(dataSource)
+                .locations(migrationSchemaLocation).load();
         flyway.migrate();
+
         return dataSource;
     }
 

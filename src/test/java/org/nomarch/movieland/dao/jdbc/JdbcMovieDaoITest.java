@@ -8,11 +8,11 @@ import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.nomarch.movieland.MainApplicationContext;
+import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.entity.SortingOrder;
-import org.nomarch.movieland.web.util.SortingUtil;
+import org.nomarch.movieland.entity.MovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, MainApplicationContext.class})
+@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
 @DataSet(value = {"movies.xml", "genres.xml", "movie_to_genre.xml"})
 class JdbcMovieDaoITest {
     @Autowired
@@ -55,25 +55,24 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getAllMovies(new SortingUtil());
-        actualMovies.sort(new SortMovieById());
+        List<Movie> actualMovies = jdbcMovieDao.findAll(new MovieRequest());
 
         //then
         assertEquals(5, actualMovies.size());
-        Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
-        Assert.assertTrue(new ReflectionEquals(expectedMovieLast).matches(actualMovies.get(4)));
+        assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
+        assertTrue(new ReflectionEquals(expectedMovieLast).matches(actualMovies.get(4)));
     }
 
     @DisplayName("Get all movies order by rating Asc")
     @Test
     void testGetAllMoviesSortByRatingAsc() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.setName("rating");
-        sortingUtil.setSortingOrder(SortingOrder.ASC);
+        MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setSortingFieldName("rating");
+        movieRequest.setSortingOrder(SortingOrder.ASC);
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
+        List<Movie> actualMovies = jdbcMovieDao.findAll(movieRequest);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -85,12 +84,12 @@ class JdbcMovieDaoITest {
     @Test
     void testGetAllMoviesSortByRatingDesc() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.setName("rating");
-        sortingUtil.setSortingOrder(SortingOrder.DESC);
+        MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setSortingFieldName("rating");
+        movieRequest.setSortingOrder(SortingOrder.DESC);
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getAllMovies(sortingUtil);
+        List<Movie> actualMovies = jdbcMovieDao.findAll(movieRequest);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -102,7 +101,7 @@ class JdbcMovieDaoITest {
     @Test
     void getRandomMovies() {
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getRandomMovies();
+        List<Movie> actualMovies = jdbcMovieDao.findRandom(3);
 
         //then
         assertEquals(3, actualMovies.size());
@@ -155,13 +154,10 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, new SortingUtil());
+        List<Movie> actualMovies = jdbcMovieDao.findByGenre(5, new MovieRequest());
 
         //then
-        actualMovies.sort(new SortMovieById());
-
         assertEquals(actualMovies.size(), 3);
-
         Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
         Assert.assertTrue(new ReflectionEquals(expectedMovieSecond).matches(actualMovies.get(1)));
         Assert.assertTrue(new ReflectionEquals(expectedMovieThird).matches(actualMovies.get(2)));
@@ -171,11 +167,11 @@ class JdbcMovieDaoITest {
     @Test
     void testGetMoviesByGenreOrderByPriceAsc() {
         //prepare
-        SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.setName("price");
-        sortingUtil.setSortingOrder(SortingOrder.ASC);
+        MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setSortingFieldName("price");
+        movieRequest.setSortingOrder(SortingOrder.ASC);
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, sortingUtil);
+        List<Movie> actualMovies = jdbcMovieDao.findByGenre(5, movieRequest);
 
         //then
         assertEquals(actualMovies.size(), 3);
@@ -187,11 +183,11 @@ class JdbcMovieDaoITest {
     @DisplayName("Get movies by genre order by price Desc")
     @Test
     void testGetMoviesByGenreOrderByPriceDesc() {
-        SortingUtil sortingUtil = new SortingUtil();
-        sortingUtil.setName("price");
-        sortingUtil.setSortingOrder(SortingOrder.DESC);
+        MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setSortingFieldName("price");
+        movieRequest.setSortingOrder(SortingOrder.DESC);
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(5, sortingUtil);
+        List<Movie> actualMovies = jdbcMovieDao.findByGenre(5, movieRequest);
 
         //then
         assertEquals(actualMovies.size(), 3);
@@ -204,18 +200,10 @@ class JdbcMovieDaoITest {
     @Test
     public void testGetMoviesByGenreOutOfRange() {
         //when
-        List<Movie> actualMovies = jdbcMovieDao.getMoviesByGenre(17, new SortingUtil());
+        List<Movie> actualMovies = jdbcMovieDao.findByGenre(17, new MovieRequest());
 
         //then
         assertEquals(0, actualMovies.size());
 
-    }
-
-    static class SortMovieById implements Comparator<Movie>
-    {
-        public int compare(Movie a, Movie b)
-        {
-            return a.getId() - b.getId();
-        }
     }
 }
