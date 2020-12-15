@@ -29,21 +29,26 @@ class CachedJdbcGenreDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @DisplayName("Test check genres cache update")
+    // Test work well on my machine and checks that cache works.
+    // I remember you said something about that test, but didn't said what's wrong exactly.
+    // I suppose that's something is bad with injecting jdbcTemplate bean and using it/
+    // If this test is bad, please explain how to implement such test in a better way.
+    @DisplayName("Test genres cache auto-update after interval")
     @Test
     void testUpdateGenresCache() throws InterruptedException {
-        Thread.sleep(10000);
+        log.info("Sleep thread for 15 seconds to wait cache to be updated from DB");
+        Thread.sleep(15000);
         assertEquals(5, genreDao.findAll().size());
 
-        log.debug("Update genres table, add new genre");
+        log.info("Update genres table, add new genre");
         jdbcTemplate.update("INSERT INTO public.genres(id, name) VALUES(6, 'сериал')");
 
-        log.debug("Check that cache was not updated immediately");
+        log.info("Check that cache was not updated immediately");
         assertEquals(5, genreDao.findAll().size());
-        log.debug("Sleep thread for 20 seconds");
+        log.info("Sleep thread for 15 seconds");
         Thread.sleep(15000);
 
-        log.debug("Checking updated cache after waiting for scheduled interval");
+        log.info("Check updated cache after waiting for scheduled interval");
         assertEquals(6, genreDao.findAll().size());
     }
 }

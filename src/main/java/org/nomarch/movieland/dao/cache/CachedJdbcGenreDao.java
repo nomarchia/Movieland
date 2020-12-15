@@ -28,6 +28,7 @@ public class CachedJdbcGenreDao implements GenreDao {
 
     @Scheduled(fixedRateString = "${cache.renew.interval}")
     void updateCache() {
+        log.debug("Update genres cache from DB");
         genresCache = genreDao.findAll();
     }
 }
