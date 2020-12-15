@@ -19,7 +19,7 @@ public class TestContext {
 
     @Bean
     @Primary
-    DataSource createDataSource() {
+    protected DataSource createDataSource() {
         PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer (imageName);
         postgreSQLContainer.start();
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
@@ -35,7 +35,7 @@ public class TestContext {
     }
 
     @Bean
-    JdbcTemplate jdbcTemplate(DataSource dataSource) {
+    protected JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 }

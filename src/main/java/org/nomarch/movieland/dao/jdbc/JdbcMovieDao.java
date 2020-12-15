@@ -17,9 +17,9 @@ public class JdbcMovieDao implements MovieDao {
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     private static final String GET_ALL = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
             "FROM public.movies";
-    public static final String GET_RANDOM = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
+    private static final String GET_RANDOM = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
             "FROM public.movies ORDER BY RANDOM() LIMIT ";
-    public static final String GET_MOVIES_BY_GENRE = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
+    private static final String GET_MOVIES_BY_GENRE = "SELECT id, name_native, name_russian, country, year, rating, price, poster_img " +
             "FROM public.movies LEFT JOIN public.movie_to_genre ON (public.movies.id = public.movie_to_genre.movie_id) WHERE public.movie_to_genre.genre_id = ?";
 
     @Autowired

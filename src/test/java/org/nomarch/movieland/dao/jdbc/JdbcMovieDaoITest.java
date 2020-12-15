@@ -16,7 +16,6 @@ import org.nomarch.movieland.entity.MovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -204,6 +203,5 @@ class JdbcMovieDaoITest {
 
         //then
         assertEquals(0, actualMovies.size());
-
     }
 }

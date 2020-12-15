@@ -16,9 +16,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CachedJdbcGenreDao implements GenreDao {
     @Autowired
     @Qualifier("genreDao")
-    GenreDao genreDao;
+    private GenreDao genreDao;
 
-    List<Genre> genresCache = new CopyOnWriteArrayList<>();
+    private List<Genre> genresCache = new CopyOnWriteArrayList<>();
 
     @Override
     public List<Genre> findAll() {
@@ -27,7 +27,7 @@ public class CachedJdbcGenreDao implements GenreDao {
     }
 
     @Scheduled(fixedRateString = "${cache.renew.interval}")
-    void updateCache() {
+    private void updateCache() {
         log.debug("Update genres cache from DB");
         genresCache = genreDao.findAll();
     }
