@@ -1,5 +1,6 @@
 package org.nomarch.movieland.web.controller;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -52,7 +53,6 @@ class MoviesControllerTest {
         mockMvc.perform(get("/api/v1/movie"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-
                 .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -93,7 +93,6 @@ class MoviesControllerTest {
         mockMvc.perform(get("/api/v1/movie/random"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-
                 .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -134,7 +133,6 @@ class MoviesControllerTest {
         mockMvc.perform(get("/api/v1/movie/genre/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-
                 .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -163,6 +161,31 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].rating").value(8.6))
                 .andExpect(jsonPath("$[2].price").value(200.60))
                 .andExpect(jsonPath("$[2].posterImg").value("https://site.com/img3.jpg"));
+    }
+
+    @Test
+    @Ignore
+    void testGetById() throws Exception {
+        //prepare
+        Movie movie = Movie.builder().id(1).nameNative("The Shawshank Redemption").nameRussian("Побег из Шоушенка").country("США")
+                .year(1994).description("a").rating(8.9).price(123.45).posterImg("https://site.com/img1.jpg").build();
+
+        when(movieService.findById(1)).thenReturn(movie);
+
+        //when
+        //when
+        mockMvc.perform(get("/api/v1/movie/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nameNative").value("The Shawshank Redemption"))
+                .andExpect(jsonPath("$.nameRussian").value("Побег из Шоушенка"))
+                .andExpect(jsonPath("$.country").value("США"))
+                .andExpect(jsonPath("$.year").value(1994))
+                .andExpect(jsonPath("$.description").value("a"))
+                .andExpect(jsonPath("$.rating").value(8.9))
+                .andExpect(jsonPath("$.price").value(123.45))
+                .andExpect(jsonPath("$.posterImg").value("https://site.com/img1.jpg"));
     }
 
     private List<Movie> createExpectedMovies() {

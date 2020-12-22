@@ -30,7 +30,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies from DB")
     @Test
-    void testGetAllMovies() {
+    void testFindAll() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
                 .id(1)
@@ -64,7 +64,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies order by rating Asc")
     @Test
-    void testGetAllMoviesSortByRatingAsc() {
+    void testFindAllSortByRatingAsc() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setSortingFieldName("rating");
@@ -98,7 +98,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get three random movies from DB")
     @Test
-    void getRandomMovies() {
+    void testFindRandom() {
         //when
         List<Movie> actualMovies = jdbcMovieDao.findRandom(3);
 
@@ -119,7 +119,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre from DB")
     @Test
-    void testGetMoviesByGenre() {
+    void testFindByGenre() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
                 .id(2)
@@ -164,7 +164,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Asc")
     @Test
-    void testGetMoviesByGenreOrderByPriceAsc() {
+    void testFindByGenreOrderByPriceAsc() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setSortingFieldName("price");
@@ -181,7 +181,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Desc")
     @Test
-    void testGetMoviesByGenreOrderByPriceDesc() {
+    void testFindByGenreOrderByPriceDesc() {
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setSortingFieldName("price");
         movieRequest.setSortingOrder(SortingOrder.DESC);
@@ -197,11 +197,31 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by non-existing genre id")
     @Test
-    public void testGetMoviesByGenreOutOfRange() {
+    public void testFindByGenreOutOfRange() {
         //when
         List<Movie> actualMovies = jdbcMovieDao.findByGenre(17, new MovieRequest());
 
         //then
         assertEquals(0, actualMovies.size());
+    }
+
+    @DisplayName("Get a movie by id")
+    @Test
+    void testFindById() {
+        //prepare
+        Movie expectedMovie = Movie.builder()
+                .id(1)
+                .nameNative("The Shawshank Redemption")
+                .nameRussian("Побег из Шоушенка")
+                .country("США")
+                .year(1994)
+                .description("a")
+                .rating(8.9)
+                .price(123.45)
+                .posterImg("image1.jpg")
+                .build();
+        //when
+        Movie actualMovie = jdbcMovieDao.findById(1);
+        assertEquals(expectedMovie, actualMovie);
     }
 }

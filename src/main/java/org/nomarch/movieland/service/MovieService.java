@@ -12,4 +12,6 @@ public interface MovieService {
     List<Movie> findRandom();
 
     List<Movie> findByGenre(Integer genreId, MovieRequest movieRequest);
+
+    Movie findById(Integer movieId);
 }

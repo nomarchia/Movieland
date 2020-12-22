@@ -19,14 +19,14 @@ public class MoviesController {
 
     @GetMapping
     public List<Movie> getAll(@RequestParam(required = false) String rating, @RequestParam(required = false) String price) {
-        log.debug("Get request by url \"/v1/movie\"");
+        log.debug("Get request by url \"/api/v1/movie\"");
         MovieRequest movieRequest = new MovieRequest().parseRawSortingParams(rating, price);
         return movieService.findAll(movieRequest);
     }
 
     @GetMapping(value = "/random")
     public List<Movie> getRandom() {
-        log.debug("Get request by url \"/v1/movie/random\"\"");
+        log.debug("Get request by url \"/api/v1/movie/random\"\"");
 
         return movieService.findRandom();
     }
@@ -34,9 +34,15 @@ public class MoviesController {
     @GetMapping(value = "/genre/{genreId}")
     public List<Movie> getByGenre(@PathVariable Integer genreId, @RequestParam(required = false) String rating,
                                   @RequestParam(required = false) String price) {
-        log.debug("Get request by url \"/v1/movie/genre/\"" + genreId);
+        log.debug("Get request by url \"/api/v1/movie/genre/\"" + genreId);
         MovieRequest movieRequest = new MovieRequest().parseRawSortingParams(rating, price);
 
         return movieService.findByGenre(genreId, movieRequest);
+    }
+
+    @GetMapping(value = "/{movieId}")
+    public Movie getById(@PathVariable Integer movieId) {
+        log.debug("Get request by url \"/api/v1/movie/\"" + movieId);
+        return movieService.findById(movieId);
     }
 }

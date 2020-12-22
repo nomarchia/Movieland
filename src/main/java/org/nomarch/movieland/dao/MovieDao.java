@@ -9,4 +9,5 @@ public interface MovieDao {
     List<Movie> findAll(MovieRequest movieRequest);
     List<Movie> findRandom(Integer moviesAmount);
     List<Movie> findByGenre(Integer genreId, MovieRequest movieRequest);
+    Movie findById(Integer movieId);
 }

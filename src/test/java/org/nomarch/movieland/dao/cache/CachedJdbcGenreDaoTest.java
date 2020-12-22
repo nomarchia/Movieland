@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet("genres.xml")
+@DataSet(value = {"movies.xml", "genres.xml", "movie_to_genre.xml"})
 class CachedJdbcGenreDaoTest {
     @Autowired
     @Qualifier("cachedGenreDao")
