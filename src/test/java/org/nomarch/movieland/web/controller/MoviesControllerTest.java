@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.impl.DefaultMovieService;
-import org.nomarch.movieland.entity.MovieRequest;
+import org.nomarch.movieland.dto.MovieRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ class MoviesControllerTest {
 
     private MockMvc mockMvc;
     private List<Movie> expectedMovies;
-
 
     @BeforeAll
     public void setUpExpectedResults() {
@@ -167,14 +166,14 @@ class MoviesControllerTest {
     @Ignore
     void testGetById() throws Exception {
         //prepare
+        String currency = "USD";
         Movie movie = Movie.builder().id(1).nameNative("The Shawshank Redemption").nameRussian("Побег из Шоушенка").country("США")
                 .year(1994).description("a").rating(8.9).price(123.45).posterImg("https://site.com/img1.jpg").build();
 
-        when(movieService.findById(1)).thenReturn(movie);
+        when(movieService.findById(1, currency)).thenReturn(movie);
 
         //when
-        //when
-        mockMvc.perform(get("/api/v1/movie/1"))
+        mockMvc.perform(get("/api/v1/movie/1?currency=USD"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.id").value(1))
