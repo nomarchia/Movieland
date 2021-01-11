@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,22 +13,24 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 @Repository
-public class CachedJdbcGenreDao implements GenreDao {
+@Component("cachedGenreDao")
+public class CachedGenreDao implements GenreDao {
     @Autowired
-    @Qualifier("genreDao")
-    private GenreDao genreDao;
-
-    private List<Genre> genresCache = new CopyOnWriteArrayList<>();
+    private GenreDao jdbcGenreDao;
+    private final List<Genre> genresCache = new CopyOnWriteArrayList<>();
 
     @Override
     public List<Genre> findAll() {
-        log.debug("Getting all genres from the cache");
+        log.debug("Returning all genres from the cache");
         return genresCache;
     }
 
-    @Scheduled(fixedRateString = "${cache.renew.interval}")
+    @Scheduled(fixedRateString = "${movies.cache.renew.interval}")
     private void updateCache() {
+        if (genresCache.size() > 0) {
+            genresCache.clear();
+        }
         log.debug("Update genres cache from DB");
-        genresCache = genreDao.findAll();
+        genresCache.addAll(jdbcGenreDao.findAll());
     }
 }

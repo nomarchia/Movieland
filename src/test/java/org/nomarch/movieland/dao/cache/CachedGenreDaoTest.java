@@ -21,15 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet("genres.xml")
-class CachedJdbcGenreDaoTest {
+@DataSet(value = {"movies.xml", "genres.xml", "movie_to_genre.xml"})
+class CachedGenreDaoTest {
     @Autowired
-    @Qualifier("cachedGenreDao")
-    private GenreDao genreDao;
+    private GenreDao cachedGenreDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Test work well on my machine and checks that cache works.
+    // TODO: Test work well on my machine and checks that cache works.
     // I remember you said something about that test, but didn't said what's wrong exactly.
     // I suppose that's something is bad with injecting jdbcTemplate bean and using it/
     // If this test is bad, please explain how to implement such test in a better way.
@@ -38,17 +37,17 @@ class CachedJdbcGenreDaoTest {
     void testUpdateGenresCache() throws InterruptedException {
         log.info("Sleep thread for 15 seconds to wait cache to be updated from DB");
         Thread.sleep(15000);
-        assertEquals(5, genreDao.findAll().size());
+        assertEquals(5, cachedGenreDao.findAll().size());
 
         log.info("Update genres table, add new genre");
         jdbcTemplate.update("INSERT INTO public.genres(id, name) VALUES(6, 'сериал')");
 
         log.info("Check that cache was not updated immediately");
-        assertEquals(5, genreDao.findAll().size());
+        assertEquals(5, cachedGenreDao.findAll().size());
         log.info("Sleep thread for 15 seconds");
         Thread.sleep(15000);
 
         log.info("Check updated cache after waiting for scheduled interval");
-        assertEquals(6, genreDao.findAll().size());
+        assertEquals(6, cachedGenreDao.findAll().size());
     }
 }

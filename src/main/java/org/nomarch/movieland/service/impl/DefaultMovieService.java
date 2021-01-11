@@ -32,4 +32,9 @@ public class DefaultMovieService implements MovieService {
     public List<Movie> findByGenre(@NonNull Integer genreId, @NonNull MovieRequest movieRequest) {
         return movieDao.findByGenre(genreId, movieRequest);
     }
+
+    @Override
+    public Movie findById(Integer movieId) {
+        return movieDao.findById(movieId);
+    }
 }

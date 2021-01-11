@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
 class JdbcGenreDaoITest {
     @Autowired
-    private GenreDao genreDao;
+    private GenreDao jdbcGenreDao;
 
     @DisplayName("Get all genres from DB")
     @Test
@@ -35,7 +34,7 @@ class JdbcGenreDaoITest {
         Genre expectedLast = Genre.builder().id(5).name("мелодрама").build();
 
         //when
-        List<Genre> actualGenres = genreDao.findAll();
+        List<Genre> actualGenres = jdbcGenreDao.findAll();
 
         //then
         assertEquals(5, actualGenres.size());

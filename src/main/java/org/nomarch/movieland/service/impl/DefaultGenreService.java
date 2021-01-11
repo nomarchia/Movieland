@@ -16,11 +16,10 @@ import java.util.List;
 @Service
 public class DefaultGenreService implements GenreService {
     @Autowired
-    @Qualifier("cachedGenreDao")
-    private GenreDao genreDao;
+    private GenreDao cachedGenreDao;
 
     @Override
     public List<Genre> findAll() {
-        return genreDao.findAll();
+        return cachedGenreDao.findAll();
     }
 }

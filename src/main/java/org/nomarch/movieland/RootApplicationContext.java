@@ -1,10 +1,10 @@
 package org.nomarch.movieland;
 
 import org.nomarch.movieland.dao.GenreDao;
-import org.nomarch.movieland.dao.cache.CachedJdbcGenreDao;
+import org.nomarch.movieland.dao.cache.CachedGenreDao;
 import org.nomarch.movieland.dao.jdbc.JdbcGenreDao;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.nomarch.movieland.web.json.CurrencyParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,14 +38,17 @@ public class RootApplicationContext {
     }
 
     @Bean
-    @Qualifier(value = "genreDao")
-    protected GenreDao genreDao() {
+    protected GenreDao jdbcGenreDao() {
         return new JdbcGenreDao();
     }
 
     @Bean
-    @Qualifier(value = "cachedGenreDao")
     protected GenreDao cachedGenreDao() {
-        return new CachedJdbcGenreDao();
+        return new CachedGenreDao();
+    }
+
+    @Bean
+    protected CurrencyParser currencyParser() {
+        return new CurrencyParser();
     }
 }
