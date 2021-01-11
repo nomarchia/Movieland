@@ -11,8 +11,8 @@ import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.entity.SortingOrder;
-import org.nomarch.movieland.entity.MovieRequest;
+import org.nomarch.movieland.common.sorting.SortingOrder;
+import org.nomarch.movieland.dto.MovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 

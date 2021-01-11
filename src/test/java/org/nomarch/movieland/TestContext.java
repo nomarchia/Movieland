@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 public class TestContext {
     @Value("${postgres.image.name}")
     String imageName;
-    @Value("${migration-schema-location}")
+    @Value("${migration.schema.location}")
     String migrationSchemaLocation;
 
     @Bean

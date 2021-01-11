@@ -1,4 +1,4 @@
-package org.nomarch.movieland.entity;
+package org.nomarch.movieland.common.sorting;
 
 import lombok.Getter;
 

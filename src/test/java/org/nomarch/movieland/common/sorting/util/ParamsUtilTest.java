@@ -1,18 +1,21 @@
-package org.nomarch.movieland.entity;
+package org.nomarch.movieland.common.sorting.util;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.nomarch.movieland.common.sorting.SortingOrder;
+import org.nomarch.movieland.common.sorting.util.ParamsUtil;
+import org.nomarch.movieland.dto.MovieRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MovieRequestTest {
+class ParamsUtilTest {
     @DisplayName("Test appendSortingOrder(String query) is SortingUtil's fields aren't initialized")
     @Test
     void testAppendIfSortingUtilNotConfigured() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
         //when
-        String returnedQuery = movieRequest.appendSortingOrder("SELECT id, name FROM table");
+        String returnedQuery = ParamsUtil.appendSortingOrder("SELECT id, name FROM table", movieRequest);
         assertNotNull(returnedQuery);
         assertEquals("SELECT id, name FROM table", returnedQuery);
     }
@@ -25,7 +28,7 @@ class MovieRequestTest {
         movieRequest.setSortingFieldName("rating");
         movieRequest.setSortingOrder(SortingOrder.ASC);
         //when
-        String returnedQuery = movieRequest.appendSortingOrder("SELECT id, name FROM table");
+        String returnedQuery = ParamsUtil.appendSortingOrder("SELECT id, name FROM table", movieRequest);
         //then
         assertEquals("SELECT id, name FROM table ORDER BY rating ASC", returnedQuery);
     }
@@ -38,16 +41,14 @@ class MovieRequestTest {
         movieRequest.setSortingFieldName("rating");
         movieRequest.setSortingOrder(SortingOrder.ASC);
         //when
-        assertThrows(NullPointerException.class, () -> movieRequest.appendSortingOrder(null));
+        assertThrows(NullPointerException.class, () -> ParamsUtil.appendSortingOrder(null, movieRequest));
     }
 
     @DisplayName("Test parseSortingParams(String rating, String price)")
     @Test
     void testParseSortingParamForRatingAsc() {
-        //prepare
-        MovieRequest movieRequest = new MovieRequest();
         //when
-        movieRequest.parseRawSortingParams("asc", null);
+        MovieRequest movieRequest = ParamsUtil.parseRawSortingParams("asc", null);
         //then
         assertEquals("rating", movieRequest.getSortingFieldName());
         assertEquals(SortingOrder.ASC, movieRequest.getSortingOrder());
@@ -56,10 +57,8 @@ class MovieRequestTest {
     @DisplayName("Test parseSortingParams(String rating, String price)")
     @Test
     void testParseSortingParamForPriceDesc() {
-        //prepare
-        MovieRequest movieRequest = new MovieRequest();
         //when
-        movieRequest.parseRawSortingParams(null, "desc");
+        MovieRequest movieRequest = ParamsUtil.parseRawSortingParams(null, "desc");
         //then
         assertEquals("price", movieRequest.getSortingFieldName());
         assertEquals(SortingOrder.DESC, movieRequest.getSortingOrder());
@@ -71,7 +70,7 @@ class MovieRequestTest {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
         //when
-        movieRequest = movieRequest.parseRawSortingParams("asc", "desc");
+        movieRequest = ParamsUtil.parseRawSortingParams("asc", "desc");
         //then
         assertNull(movieRequest.getSortingFieldName());
         assertNull(movieRequest.getSortingOrder());

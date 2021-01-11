@@ -6,12 +6,14 @@ import org.nomarch.movieland.dao.jdbc.mapper.GenreRowMapper;
 import org.nomarch.movieland.entity.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Slf4j
 @Repository
+@Component("jdbcGenreDao")
 public class JdbcGenreDao implements GenreDao {
     private static final GenreRowMapper GENRE_ROW_MAPPER = new GenreRowMapper();
     private static final String GET_ALL = "SELECT id, name FROM public.genres";
