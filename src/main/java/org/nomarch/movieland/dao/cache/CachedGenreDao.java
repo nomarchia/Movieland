@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CachedGenreDao implements GenreDao {
     @Autowired
     private GenreDao jdbcGenreDao;
-    private final List<Genre> genresCache = new CopyOnWriteArrayList<>();
+    private volatile List<Genre> genresCache = new CopyOnWriteArrayList<>();
 
     @Override
     public List<Genre> findAll() {

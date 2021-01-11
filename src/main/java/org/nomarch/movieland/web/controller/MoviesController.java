@@ -1,6 +1,7 @@
 package org.nomarch.movieland.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nomarch.movieland.common.sorting.SortingOrder;
 import org.nomarch.movieland.common.sorting.util.ParamsUtil;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.impl.DefaultMovieService;
@@ -19,9 +20,10 @@ public class MoviesController {
     private DefaultMovieService movieService;
 
     @GetMapping
-    public List<Movie> getAll(@RequestParam(required = false) String rating, @RequestParam(required = false) String price) {
+    public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
+                              @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
         log.debug("Get request by url \"/api/v1/movie\"");
-        MovieRequest movieRequest = ParamsUtil.parseRawSortingParams(rating, price);
+        MovieRequest movieRequest = ParamsUtil.addSortingParams(ratingOrder, priceOrder);
         return movieService.findAll(movieRequest);
     }
 
@@ -33,10 +35,11 @@ public class MoviesController {
     }
 
     @GetMapping(value = "/genre/{genreId}")
-    public List<Movie> getByGenre(@PathVariable Integer genreId, @RequestParam(required = false) String rating,
-                                  @RequestParam(required = false) String price) {
+    public List<Movie> getByGenre(@PathVariable Integer genreId,
+                                  @RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
+                                  @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
         log.debug("Get request by url \"/api/v1/movie/genre/\"" + genreId);
-        MovieRequest movieRequest = ParamsUtil.parseRawSortingParams(rating, price);
+        MovieRequest movieRequest = ParamsUtil.addSortingParams(ratingOrder, priceOrder);
 
         return movieService.findByGenre(genreId, movieRequest);
     }

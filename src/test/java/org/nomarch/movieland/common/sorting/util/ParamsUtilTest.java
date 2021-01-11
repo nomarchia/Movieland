@@ -48,7 +48,7 @@ class ParamsUtilTest {
     @Test
     void testParseSortingParamForRatingAsc() {
         //when
-        MovieRequest movieRequest = ParamsUtil.parseRawSortingParams("asc", null);
+        MovieRequest movieRequest = ParamsUtil.addSortingParams(SortingOrder.ASC, null);
         //then
         assertEquals("rating", movieRequest.getSortingFieldName());
         assertEquals(SortingOrder.ASC, movieRequest.getSortingOrder());
@@ -58,7 +58,7 @@ class ParamsUtilTest {
     @Test
     void testParseSortingParamForPriceDesc() {
         //when
-        MovieRequest movieRequest = ParamsUtil.parseRawSortingParams(null, "desc");
+        MovieRequest movieRequest = ParamsUtil.addSortingParams(null, SortingOrder.DESC);
         //then
         assertEquals("price", movieRequest.getSortingFieldName());
         assertEquals(SortingOrder.DESC, movieRequest.getSortingOrder());
@@ -67,10 +67,8 @@ class ParamsUtilTest {
     @DisplayName("Test parseSortingParams(rating, price) when both param values are initiated")
     @Test
     void testParseSortingBothSortingParamsHaveValues() {
-        //prepare
-        MovieRequest movieRequest = new MovieRequest();
         //when
-        movieRequest = ParamsUtil.parseRawSortingParams("asc", "desc");
+        MovieRequest movieRequest = ParamsUtil.addSortingParams(SortingOrder.ASC, SortingOrder.DESC);
         //then
         assertNull(movieRequest.getSortingFieldName());
         assertNull(movieRequest.getSortingOrder());

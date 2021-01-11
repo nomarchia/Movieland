@@ -18,21 +18,21 @@ public class ParamsUtil {
      * parameters have sorting values, no filter would be applied
      * and SortingUtil state stays not initiated;
      */
-    public static MovieRequest parseRawSortingParams(String rating, String price) {
+    public static MovieRequest addSortingParams(SortingOrder rating, SortingOrder price) {
         MovieRequest movieRequest = new MovieRequest();
         log.debug("Parsing sorting params");
-        if (Objects.nonNull(rating) && Objects.nonNull(price)) {
+        if (rating != null && price != null) {
             log.debug("Both sorting values are initiated. No filter will be applied as sorting order");
             return movieRequest;
         }
         if (rating != null) {
             movieRequest.setSortingFieldName("rating");
-            movieRequest.setSortingOrder(SortingOrder.valueOf(rating.toUpperCase()));
-            log.debug("Parsed movies order by rating " + rating);
+            movieRequest.setSortingOrder(rating);
+            log.debug("Parsed movies order by rating " + rating.getOrder());
         } else if (price != null) {
             movieRequest.setSortingFieldName("price");
-            movieRequest.setSortingOrder(SortingOrder.valueOf(price.toUpperCase()));
-            log.debug("Parsed movies order by price " + price);
+            movieRequest.setSortingOrder(price);
+            log.debug("Parsed movies order by price " + price.getOrder());
         }
         return movieRequest;
     }
