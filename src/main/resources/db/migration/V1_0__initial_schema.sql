@@ -2,9 +2,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(200),
     email VARCHAR(100),
-    raw_password VARCHAR(40),
-    passwordHash VARCHAR,
-    salt VARCHAR
+    password VARCHAR(40)
 );
 
 CREATE TABLE genres (

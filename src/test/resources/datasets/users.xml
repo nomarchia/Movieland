@@ -1,0 +1,4 @@
+<dataset>
+    <USERS id="1" full_name="Рамзес Второй" email="ramzes@egyptmail.com" password="mummy" />
+    <USERS id="2" full_name="Ганнибал Барка" email="hannibal@carthagen.eu" password="alps"/>
+</dataset>
