@@ -63,7 +63,7 @@ public class SecurityTokenService implements SecurityService {
     }
 
     @Scheduled(fixedRateString = "${user.uuid.cache.clear.interval}")
-    void clearCache() {
+    private void clearExpiredSessionsCache() {
         for (Map.Entry<String, Session> entry : uuidSessionCacheMap.entrySet()) {
             if (LocalDateTime.now().isAfter(entry.getValue().getExpiryTime())) {
                 uuidSessionCacheMap.remove(entry.getKey());
