@@ -3,6 +3,8 @@ package org.nomarch.movieland.security.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.jdbc.JdbcUserDao;
 import org.nomarch.movieland.dto.UserUUID;
+import org.nomarch.movieland.entity.User;
+import org.nomarch.movieland.exception.IncorrectCredentialsException;
 import org.nomarch.movieland.security.SecurityService;
 import org.nomarch.movieland.security.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +31,18 @@ public class SecurityTokenService implements SecurityService {
 
     @Override
     public UserUUID login(@NonNull String email, @NonNull String password) {
-        String fullName = jdbcUserDao.login(email, password);
+        User user = jdbcUserDao.login(email, password);
 
         UUID uuid = UUID.randomUUID();
         Session session = Session.builder()
-                .nickName(fullName)
+                .user(user)
                 .uuidToken(uuid)
                 .expiryTime(LocalDateTime.now().plusSeconds(uuidLifeTimeInSeconds))
                 .build();
 
         uuidSessionCacheMap.put(uuid.toString(), session);
 
-        return UserUUID.builder().uuid(uuid.toString()).nickname(fullName).build();
+        return UserUUID.builder().uuid(uuid.toString()).nickname(user.getFullName()).build();
     }
 
     @Override
@@ -51,15 +53,16 @@ public class SecurityTokenService implements SecurityService {
         }
     }
 
-    boolean validateUuid(@NonNull String uuidToken) {
+    @Override
+    public long findUserIdByUUIDToken(@NonNull String uuidToken) {
         Session session = uuidSessionCacheMap.get(uuidToken);
 
         if (session == null || LocalDateTime.now().isAfter(session.getExpiryTime())) {
             uuidSessionCacheMap.remove(uuidToken);
-            return false;
+            throw new IncorrectCredentialsException("UUID token is invalid or expired: " + uuidToken);
         }
 
-        return true;
+        return session.getUser().getId();
     }
 
     @Scheduled(fixedRateString = "${user.uuid.cache.clear.interval}")

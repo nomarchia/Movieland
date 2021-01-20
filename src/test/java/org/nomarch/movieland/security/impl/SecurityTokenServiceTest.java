@@ -11,7 +11,6 @@ import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dto.UserUUID;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
-import org.nomarch.movieland.security.impl.SecurityTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -44,7 +43,7 @@ class SecurityTokenServiceTest {
         assertThrows(IncorrectCredentialsException.class, () -> securityTokenService.login("wrong@email", "wrongPassword"));
     }
 
-    @DisplayName("Validate uuid token")
+    @DisplayName("Validate uuid token and get user's id by the token")
     @Test
     void testValidateUUID() {
         //prepare
@@ -52,10 +51,10 @@ class SecurityTokenServiceTest {
         assertNotNull(userUUID);
 
         //when
-        boolean actual = securityTokenService.validateUuid(userUUID.getUuid());
+        long userId = securityTokenService.findUserIdByUUIDToken(userUUID.getUuid());
 
         //then
-        assertTrue(actual);
+        assertEquals(1, userId);
     }
 
     @DisplayName("Clear session from cache when expiry time is reached")
@@ -65,13 +64,13 @@ class SecurityTokenServiceTest {
         log.info("Login and acquire a uuid");
         UserUUID userUUID = securityTokenService.login("ramzes@egyptmail.com", "mummy");
         log.info("Check that new uuid was added to the cache (uuid lifetime is 10 second)");
-        assertTrue(securityTokenService.validateUuid(userUUID.getUuid()));
+        assertEquals(1, securityTokenService.findUserIdByUUIDToken(userUUID.getUuid()));
 
         log.info("Sleep thread for 15 seconds (cache clearing interval is every 10 seconds)");
         Thread.sleep(15000);
 
         //then
         log.info("Check that entry with current uuid was cleared from the cache");
-        assertFalse(securityTokenService.validateUuid(userUUID.getUuid()));
+        assertThrows(IncorrectCredentialsException.class, () -> securityTokenService.findUserIdByUUIDToken(userUUID.getUuid()));
     }
 }

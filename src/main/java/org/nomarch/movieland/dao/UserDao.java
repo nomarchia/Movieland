@@ -1,5 +1,7 @@
 package org.nomarch.movieland.dao;
 
+import org.nomarch.movieland.entity.User;
+
 public interface UserDao {
-    String login(String email, String password);
+    User login(String email, String password);
 }
