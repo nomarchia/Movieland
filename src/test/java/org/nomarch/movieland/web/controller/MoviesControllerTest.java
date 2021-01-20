@@ -1,6 +1,5 @@
 package org.nomarch.movieland.web.controller;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

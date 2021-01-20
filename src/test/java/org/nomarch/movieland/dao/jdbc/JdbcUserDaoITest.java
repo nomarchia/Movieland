@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
+import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -22,15 +23,16 @@ class JdbcUserDaoITest {
     @Autowired
     private JdbcUserDao jdbcUserDao;
 
-    @DisplayName("Test login - get user's full name after checking his email and password")
+    @DisplayName("Test login - get a user with its id and full name after checking his email and password")
     @Test
     void testLogin() {
         //prepare
         String expectedFullName = "Рамзес Второй";
         //when
-        String actualFullName = jdbcUserDao.login("ramzes@egyptmail.com", "mummy");
+        User actualUser = jdbcUserDao.login("ramzes@egyptmail.com", "mummy");
         //then
-        assertEquals(expectedFullName, actualFullName);
+        assertEquals(expectedFullName, actualUser.getFullName());
+        assertEquals(1, actualUser.getId());
     }
 
     @DisplayName("Test login with non-existing value")
