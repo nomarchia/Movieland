@@ -39,5 +39,10 @@ CREATE TABLE reviews (
     CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE countries (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
 
 
