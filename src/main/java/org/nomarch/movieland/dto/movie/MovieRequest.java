@@ -1,4 +1,4 @@
-package org.nomarch.movieland.dto;
+package org.nomarch.movieland.dto.movie;
 
 import lombok.Data;
 import org.nomarch.movieland.common.sorting.SortingOrder;

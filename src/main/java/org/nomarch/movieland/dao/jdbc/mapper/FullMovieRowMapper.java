@@ -13,7 +13,6 @@ public class FullMovieRowMapper implements RowMapper<Movie> {
                 .id(resultSet.getInt("id"))
                 .nameNative(resultSet.getString("name_native"))
                 .nameRussian(resultSet.getString("name_russian"))
-                .country(resultSet.getString("country"))
                 .year(resultSet.getInt("year"))
                 .description(resultSet.getString("description"))
                 .rating(resultSet.getDouble("rating"))

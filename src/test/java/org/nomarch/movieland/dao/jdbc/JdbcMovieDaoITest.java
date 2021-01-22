@@ -2,17 +2,17 @@ package org.nomarch.movieland.dao.jdbc;
 
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
-import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import org.junit.Assert;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
+import org.nomarch.movieland.dao.MovieDao;
+import org.nomarch.movieland.dto.movie.MovieDTO;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.common.sorting.SortingOrder;
-import org.nomarch.movieland.dto.MovieRequest;
+import org.nomarch.movieland.dto.movie.MovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -23,20 +23,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet(value = {"movies.xml", "genres.xml", "movie_to_genre.xml"})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JdbcMovieDaoITest {
     @Autowired
-    private JdbcMovieDao jdbcMovieDao;
+    private MovieDao movieDao;
 
     @DisplayName("Get all movies from DB")
     @Test
+    @Order(1)
     void testFindAll() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
                 .id(1)
                 .nameNative("The Shawshank Redemption")
                 .nameRussian("Побег из Шоушенка")
-                .country("США")
                 .year(1994)
                 .rating(8.9)
                 .price(123.45)
@@ -46,7 +46,6 @@ class JdbcMovieDaoITest {
                 .id(5)
                 .nameNative("Dances with Wolves")
                 .nameRussian("Танцующий с волками")
-                .country("США, Великобритания")
                 .year(1990)
                 .rating(8.00)
                 .price(120.55)
@@ -54,7 +53,7 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findAll(new MovieRequest());
+        List<Movie> actualMovies = movieDao.findAll(new MovieRequest());
 
         //then
         assertEquals(5, actualMovies.size());
@@ -64,6 +63,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies order by rating Asc")
     @Test
+    @Order(2)
     void testFindAllSortByRatingAsc() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
@@ -71,7 +71,7 @@ class JdbcMovieDaoITest {
         movieRequest.setSortingOrder(SortingOrder.ASC);
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findAll(movieRequest);
+        List<Movie> actualMovies = movieDao.findAll(movieRequest);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -81,6 +81,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies order by rating Desc")
     @Test
+    @Order(3)
     void testGetAllMoviesSortByRatingDesc() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
@@ -88,7 +89,7 @@ class JdbcMovieDaoITest {
         movieRequest.setSortingOrder(SortingOrder.DESC);
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findAll(movieRequest);
+        List<Movie> actualMovies = movieDao.findAll(movieRequest);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -98,9 +99,10 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get three random movies from DB")
     @Test
+    @Order(4)
     void testFindRandom() {
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findRandom(3);
+        List<Movie> actualMovies = movieDao.findRandom(3);
 
         //then
         assertEquals(3, actualMovies.size());
@@ -110,7 +112,6 @@ class JdbcMovieDaoITest {
             assertNotEquals(0, aMovie.getId());
             assertNotNull(aMovie.getNameNative());
             assertNotNull(aMovie.getNameRussian());
-            assertNotNull(aMovie.getCountry());
             assertNotEquals(0, aMovie.getYear());
             assertNotEquals(0.0, aMovie.getRating());
             assertNotEquals(0.0, aMovie.getPrice());
@@ -119,13 +120,13 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre from DB")
     @Test
+    @Order(5)
     void testFindByGenre() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
                 .id(2)
                 .nameNative("Forrest Gump")
                 .nameRussian("Форрест Гамп")
-                .country("США")
                 .year(1994)
                 .rating(8.6)
                 .price(200.60)
@@ -135,7 +136,6 @@ class JdbcMovieDaoITest {
                 .id(3)
                 .nameNative("La vita è bella")
                 .nameRussian("Жизнь прекрасна")
-                .country("Италия")
                 .year(1997)
                 .rating(8.2)
                 .price(145.99)
@@ -145,7 +145,6 @@ class JdbcMovieDaoITest {
                 .id(4)
                 .nameNative("Titanic")
                 .nameRussian("Титаник")
-                .country("США")
                 .year(1997)
                 .rating(7.9)
                 .price(150.00)
@@ -153,27 +152,28 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findByGenre(5, new MovieRequest());
+        List<Movie> actualMovies = movieDao.findByGenre(5, new MovieRequest());
 
         //then
-        assertEquals(actualMovies.size(), 3);
-        Assert.assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
-        Assert.assertTrue(new ReflectionEquals(expectedMovieSecond).matches(actualMovies.get(1)));
-        Assert.assertTrue(new ReflectionEquals(expectedMovieThird).matches(actualMovies.get(2)));
+        assertEquals(3, actualMovies.size());
+        assertTrue(new ReflectionEquals(expectedMovieFirst).matches(actualMovies.get(0)));
+        assertTrue(new ReflectionEquals(expectedMovieSecond).matches(actualMovies.get(1)));
+        assertTrue(new ReflectionEquals(expectedMovieThird).matches(actualMovies.get(2)));
     }
 
     @DisplayName("Get movies by genre order by price Asc")
     @Test
+    @Order(6)
     void testFindByGenreOrderByPriceAsc() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setSortingFieldName("price");
         movieRequest.setSortingOrder(SortingOrder.ASC);
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findByGenre(5, movieRequest);
+        List<Movie> actualMovies = movieDao.findByGenre(5, movieRequest);
 
         //then
-        assertEquals(actualMovies.size(), 3);
+        assertEquals(3, actualMovies.size());
         assertEquals(145.99, actualMovies.get(0).getPrice());
         assertEquals(150.00, actualMovies.get(1).getPrice());
         assertEquals(200.6, actualMovies.get(2).getPrice());
@@ -181,12 +181,13 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Desc")
     @Test
+    @Order(7)
     void testFindByGenreOrderByPriceDesc() {
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setSortingFieldName("price");
         movieRequest.setSortingOrder(SortingOrder.DESC);
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findByGenre(5, movieRequest);
+        List<Movie> actualMovies = movieDao.findByGenre(5, movieRequest);
 
         //then
         assertEquals(actualMovies.size(), 3);
@@ -197,9 +198,10 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by non-existing genre id")
     @Test
+    @Order(8)
     public void testFindByGenreOutOfRange() {
         //when
-        List<Movie> actualMovies = jdbcMovieDao.findByGenre(17, new MovieRequest());
+        List<Movie> actualMovies = movieDao.findByGenre(17, new MovieRequest());
 
         //then
         assertEquals(0, actualMovies.size());
@@ -207,13 +209,13 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get a movie by id")
     @Test
+    @Order(9)
     void testFindById() {
         //prepare
         Movie expectedMovie = Movie.builder()
                 .id(1)
                 .nameNative("The Shawshank Redemption")
                 .nameRussian("Побег из Шоушенка")
-                .country("США")
                 .year(1994)
                 .description("a")
                 .rating(8.9)
@@ -221,7 +223,46 @@ class JdbcMovieDaoITest {
                 .posterImg("image1.jpg")
                 .build();
         //when
-        Movie actualMovie = jdbcMovieDao.findById(1);
+        Movie actualMovie = movieDao.findById(1);
         assertEquals(expectedMovie, actualMovie);
+    }
+
+    @DisplayName("Add new movie to DB")
+    @Test
+    @Order(10)
+    @ExpectedDataSet(value = {"movies_after_adding_new.xml", "movie_to_genre_after_adding_new_movie.xml", "movie_to_country_after_adding_new_movie.xml"})
+    void testAddNew() {
+        //prepare
+        MovieDTO newMovie = MovieDTO.builder().nameNative("New movie").nameRussian("Новый фильм").yearOfRelease(2020)
+                .description("Description").price(69.99).picturePath("image6.jpg")
+                .genres(new int[]{1, 2}).countries(new int[]{1, 2}).build();
+
+        //when
+        movieDao.add(newMovie);
+    }
+
+    @DisplayName("Update info of existing movie in DB without changed genres/countries")
+    @Test
+    @Order(11)
+    @ExpectedDataSet(value = "movies_after_movie_edited.xml")
+    void testEditMovie() {
+        //prepare
+        MovieDTO updatedMovie = MovieDTO.builder().nameRussian("Изменное название").price(200.1).picturePath("newPoster.jpg").build();
+
+        //when
+        movieDao.edit(2, updatedMovie);
+    }
+
+    @DisplayName("Update info of existing movie in DB with changed genres/countries")
+    @Test
+    @Order(12)
+    @ExpectedDataSet(value = {"movies_after_movie_edited.xml", "movie_to_genre_after_editing_a_movie.xml", "movie_to_country_after_editing_a_movie.xml"})
+    void testEditMovieWithGenresAndCountries() {
+        //prepare
+        MovieDTO updatedMovie = MovieDTO.builder().nameRussian("Изменное название").price(200.1).picturePath("newPoster.jpg")
+                .genres(new int[]{1, 2}).countries(new int[]{1, 2}).build();
+
+        //when
+        movieDao.edit(2, updatedMovie);
     }
 }

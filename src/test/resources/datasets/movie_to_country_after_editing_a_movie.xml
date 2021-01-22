@@ -1,0 +1,12 @@
+<dataset>
+    <MOVIE_TO_COUNTRY column_id="1" movie_id="1" country_id="1" />
+    <MOVIE_TO_COUNTRY column_id="3" movie_id="3" country_id="2" />
+    <MOVIE_TO_COUNTRY column_id="4" movie_id="4" country_id="3" />
+    <MOVIE_TO_COUNTRY column_id="5" movie_id="5" country_id="1" />
+    <MOVIE_TO_COUNTRY column_id="6" movie_id="5" country_id="3" />
+    <MOVIE_TO_COUNTRY column_id="7" movie_id="6" country_id="1" />
+    <MOVIE_TO_COUNTRY column_id="8" movie_id="6" country_id="2" />
+    <MOVIE_TO_COUNTRY column_id="9" movie_id="2" country_id="1" />
+    <MOVIE_TO_COUNTRY column_id="10" movie_id="2" country_id="2" />
+</dataset>
+
