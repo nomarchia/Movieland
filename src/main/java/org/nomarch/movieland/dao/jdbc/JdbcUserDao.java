@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JdbcUserDao implements UserDao {
     private static final UserWithoutCredentialsRowMapper USER_WITHOUT_CREDENTIALS_ROW_MAPPER = new UserWithoutCredentialsRowMapper();
-    private static final String LOGIN = "SELECT id, full_name FROM users WHERE email = ? AND password = ?";
+    private static final String LOGIN = "SELECT users.id, full_name, user_role.role FROM users " +
+            "INNER JOIN user_role ON users.id = user_role.user_id WHERE email = ? AND password = ? ";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

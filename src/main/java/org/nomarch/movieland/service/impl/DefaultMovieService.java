@@ -2,9 +2,10 @@ package org.nomarch.movieland.service.impl;
 
 import lombok.NonNull;
 import org.nomarch.movieland.dao.MovieDao;
+import org.nomarch.movieland.dto.movie.MovieDTO;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.MovieService;
-import org.nomarch.movieland.dto.MovieRequest;
+import org.nomarch.movieland.dto.movie.MovieRequest;
 import org.nomarch.movieland.web.json.CurrencyParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,16 @@ public class DefaultMovieService implements MovieService {
         movie.setPrice(movie.getPrice() / currencyRate);
 
         return movie;
+    }
+
+    @Override
+    public void add(MovieDTO newMovie) {
+        movieDao.add(newMovie);
+    }
+
+    @Override
+    public void edit(Integer movieId, MovieDTO movie) {
+        movieDao.edit(movieId, movie);
     }
 
     @Scheduled(fixedRateString = "${nbu.rates.renew.interval}")

@@ -7,7 +7,7 @@ import org.mockito.MockitoAnnotations;
 import org.nomarch.movieland.common.sorting.SortingOrder;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.impl.DefaultMovieService;
-import org.nomarch.movieland.dto.MovieRequest;
+import org.nomarch.movieland.dto.movie.MovieRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
