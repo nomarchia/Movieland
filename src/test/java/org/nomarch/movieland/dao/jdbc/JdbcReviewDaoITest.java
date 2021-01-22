@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 @DBRider()
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet(value = {"movies.xml", "users.xml", "reviews.xml"}, cleanAfter = true)
+@DataSet(value = {"movies.xml", "users.xml", "reviews.xml"}, cleanAfter = true, cleanBefore = true)
 class JdbcReviewDaoITest {
     @Autowired
     JdbcReviewDao jdbcReviewDao;

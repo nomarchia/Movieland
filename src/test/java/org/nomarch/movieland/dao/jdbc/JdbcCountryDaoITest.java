@@ -26,11 +26,11 @@ class JdbcCountryDaoITest {
 
     @DisplayName("Get all countries from DB")
     @Test
-    @DataSet(value = "countries.xml")
+    @DataSet(value = "countries.xml", cleanBefore = true)
     void testFindAll() {
         //prepare
-        Country expectedCountryOne = Country.builder().id(1).name("Великобритания").build();
-        Country expectedCountryTwo = Country.builder().id(2).name("Украина").build();
+        Country expectedCountryOne = Country.builder().id(1).name("США").build();
+        Country expectedCountryTwo = Country.builder().id(2).name("Великобритания").build();
         Country expectedCountryThree = Country.builder().id(3).name("Италия").build();
 
         //when

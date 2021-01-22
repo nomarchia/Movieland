@@ -3,8 +3,7 @@ package org.nomarch.movieland.common.sorting.util;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nomarch.movieland.common.sorting.SortingOrder;
-import org.nomarch.movieland.common.sorting.util.ParamsUtil;
-import org.nomarch.movieland.dto.MovieRequest;
+import org.nomarch.movieland.dto.movie.MovieRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

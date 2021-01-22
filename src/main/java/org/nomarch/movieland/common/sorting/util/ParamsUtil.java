@@ -3,7 +3,7 @@ package org.nomarch.movieland.common.sorting.util;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.common.sorting.SortingOrder;
-import org.nomarch.movieland.dto.MovieRequest;
+import org.nomarch.movieland.dto.movie.MovieRequest;
 
 import java.util.Objects;
 

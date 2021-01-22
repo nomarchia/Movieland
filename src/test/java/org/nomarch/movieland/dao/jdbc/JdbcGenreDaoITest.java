@@ -27,7 +27,7 @@ class JdbcGenreDaoITest {
 
     @DisplayName("Get all genres from DB")
     @Test
-    @DataSet(value = {"genres.xml", "movies.xml", "movie_to_genre.xml"})
+    @DataSet(value = {"genres.xml", "movies.xml", "movie_to_genre.xml"}, cleanBefore = true)
     void testGetAll() {
         //prepare
         Genre expectedFirst = Genre.builder().id(1).name("драма").build();
