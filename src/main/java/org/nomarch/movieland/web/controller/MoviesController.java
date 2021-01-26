@@ -29,14 +29,14 @@ public class MoviesController {
     @GetMapping
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                               @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
-        log.debug("Get request by url \"/api/v1/movie\"");
+        log.debug("GET request by url \"/api/v1/movie\"");
         MovieRequest movieRequest = ParamsUtil.addSortingParams(ratingOrder, priceOrder);
         return movieService.findAll(movieRequest);
     }
 
     @GetMapping(value = "/random")
     public List<Movie> getRandom() {
-        log.debug("Get request by url \"/api/v1/movie/random\"\"");
+        log.debug("GET request by url \"/api/v1/movie/random\"\"");
 
         return movieService.findRandom();
     }
@@ -45,7 +45,7 @@ public class MoviesController {
     public List<Movie> getByGenre(@PathVariable Integer genreId,
                                   @RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                                   @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
-        log.debug("Get request by url \"/api/v1/movie/genre/\"" + genreId);
+        log.debug("GET request by url \"/api/v1/movie/genre/\"{}", genreId);
         MovieRequest movieRequest = ParamsUtil.addSortingParams(ratingOrder, priceOrder);
 
         return movieService.findByGenre(genreId, movieRequest);
@@ -53,12 +53,13 @@ public class MoviesController {
 
     @GetMapping(value = "/{movieId}")
     public Movie getById(@PathVariable Integer movieId, @RequestParam(required = false) String currency) {
-        log.debug("Get request by url \"/api/v1/movie/\"" + movieId);
+        log.debug("GET request by url \"/api/v1/movie/\"{}", movieId);
         return movieService.findById(movieId, currency);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void add(@RequestHeader String uuid, @RequestBody MovieDTO newMovie) {
+        log.debug("POST request by url \"/api/v1/movie/\"");
         checkAdminRights(uuid);
         movieService.add(newMovie);
     }

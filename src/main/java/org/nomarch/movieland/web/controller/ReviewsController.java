@@ -21,10 +21,12 @@ public class ReviewsController {
 
     @PostMapping(value = "review")
     public void addReview(@RequestHeader String uuid, @RequestBody ReviewRequest reviewRequest) {
+        log.debug("POST request by url \"/api/v1/review\" for user with token: {}", uuid);
         User user = securityTokenService.findUserByUUIDToken(uuid);
 
         Review newReview = Review.builder().movieId(reviewRequest.getMovieId()).userId(user.getId()).text(reviewRequest.getText()).build();
 
+        log.debug("Saving new review: {}", newReview);
         defaultReviewService.save(newReview);
     }
 }

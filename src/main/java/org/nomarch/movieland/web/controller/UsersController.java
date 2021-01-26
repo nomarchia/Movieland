@@ -16,11 +16,13 @@ public class UsersController {
 
     @PostMapping(value = "login")
     public UserUUID login(@RequestParam String email, @RequestParam String password) {
+        log.debug("POST request by url \"/api/v1/login\" for user with email address: {}", email);
         return securityTokenService.login(email, password);
     }
 
     @DeleteMapping(value = "logout")
     public void logout(@RequestHeader String uuid) {
+        log.debug("DELETE request by url \"/api/v1/logout\" for user with uuid token: {}", uuid);
         securityTokenService.logout(uuid);
     }
 }

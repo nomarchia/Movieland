@@ -20,7 +20,7 @@ public class GenresController {
 
     @GetMapping
     public List<Genre> getAll() {
-        log.debug("Get request by url \"/api/v1/genre\"");
+        log.debug("GET request by url \"/api/v1/genre\"");
         return genreService.findAll();
     }
 }

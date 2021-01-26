@@ -22,12 +22,13 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User login(String email, String password) {
-        log.debug("Logging in user with email: {}", email);
+        log.debug("Querying from DB for user with email: {}", email);
 
         try {
             return jdbcTemplate.queryForObject(LOGIN, USER_WITHOUT_CREDENTIALS_ROW_MAPPER, email, password);
         } catch (DataAccessException e) {
-            throw new IncorrectCredentialsException("Incorrect email or password for user with email: " + email + "Exception: " + e);
+            log.debug("User with email {} is not found or email/password was incorrect", email);
+            throw new IncorrectCredentialsException("Incorrect email or password for user with email: " + email + ". Exception: " + e);
         }
     }
 }

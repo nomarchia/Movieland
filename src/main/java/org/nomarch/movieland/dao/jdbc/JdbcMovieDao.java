@@ -44,10 +44,6 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    SimpleJdbcInsert simpleJdbcInsert;
-
-
-
     @Override
     public List<Movie> findAll(MovieRequest movieRequest) {
         log.debug("Get list of all movies from DB");
@@ -70,43 +66,50 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public Movie findById(Integer movieId) {
+        log.debug("Getting a movie with id {} from DB", movieId);
         return jdbcTemplate.queryForObject(GET_BY_ID, FULL_MOVIE_ROW_MAPPER, movieId);
     }
 
     @Override
     public void add(MovieDTO newMovie) {
+        log.debug("Saving new movie ({}) to DB", newMovie);
+
         jdbcTemplate.update(ADD_NEW, newMovie.getNameNative(), newMovie.getNameRussian(), newMovie.getYearOfRelease(),
                 newMovie.getDescription(), newMovie.getPrice(), newMovie.getPicturePath());
 
         Integer movieId = jdbcTemplate.queryForObject(GET_ID_BY_NAME + newMovie.getNameNative() + "'", Integer.class);
-        for (int genreId : newMovie.getGenres()) {
-            jdbcTemplate.update(ADD_MOVIE_GENRES, movieId, genreId);
-        }
 
-        for (int countryId : newMovie.getCountries()) {
-            jdbcTemplate.update(ADD_MOVIE_COUNTRIES, movieId, countryId);
-        }
+        updateManyToManyTable(ADD_MOVIE_GENRES, movieId, newMovie.getGenres());
+        updateManyToManyTable(ADD_MOVIE_COUNTRIES, movieId, newMovie.getCountries());
     }
 
     @Override
     public void edit(Integer movieId, MovieDTO updatedMovie) {
+        log.debug("Updating a movie by id {} with new values: {}", movieId, updatedMovie);
+
         String updateQuery = QueryGenerator.formMovieUpdateQuery(updatedMovie);
         jdbcTemplate.update(updateQuery, movieId);
 
         if (updatedMovie.getGenres() != null) {
-            jdbcTemplate.update(CLEAR_MOVIE_GENRES, movieId);
-
-            for (int genreId : updatedMovie.getGenres()) {
-                jdbcTemplate.update(ADD_MOVIE_GENRES, movieId, genreId);
-            }
+            clearOldValues(CLEAR_MOVIE_GENRES, movieId);
+            updateManyToManyTable(ADD_MOVIE_GENRES, movieId, updatedMovie.getGenres());
         }
 
         if (updatedMovie.getCountries() != null) {
-            jdbcTemplate.update(CLEAR_MOVIE_COUNTRIES, movieId);
-
-            for (int countryId : updatedMovie.getCountries()) {
-                jdbcTemplate.update(ADD_MOVIE_COUNTRIES, movieId, countryId);
-            }
+            clearOldValues(CLEAR_MOVIE_COUNTRIES, movieId);
+            updateManyToManyTable(ADD_MOVIE_COUNTRIES, movieId, updatedMovie.getCountries());
         }
+    }
+
+    private void updateManyToManyTable(String insertQuery, Integer movieId, int[] valueIds) {
+        log.debug("Inserting values by ids {} for movie with id {}, using query ({})", valueIds, movieId, insertQuery);
+        for (int valueId : valueIds) {
+            jdbcTemplate.update(insertQuery, movieId, valueId);
+        }
+    }
+
+    private void clearOldValues(String deleteQuery, Integer movieId) {
+        log.debug("Clearing old values for movie with id {}, using ({}) query", movieId, deleteQuery);
+        jdbcTemplate.update(deleteQuery, movieId);
     }
 }
