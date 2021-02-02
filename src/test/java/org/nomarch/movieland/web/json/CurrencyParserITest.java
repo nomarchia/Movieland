@@ -37,6 +37,7 @@ class CurrencyParserITest {
     @Order(2)
     void testParseCurrencyWithIncorrectURL() {
         //prepare
+        currencyParser = new CurrencyParser();
         currencyParser.setNbuJsonUrl("incorrectUrl");
 
         //when

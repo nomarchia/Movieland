@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JdbcMovieDaoITest {
     @Autowired
     private MovieDao movieDao;
@@ -119,7 +120,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre from DB")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
     void testFindByGenre() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
@@ -162,7 +163,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Asc")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
     void testFindByGenreOrderByPriceAsc() {
         //prepare
         MovieRequest movieRequest = new MovieRequest();
@@ -180,7 +181,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Desc")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
     void testFindByGenreOrderByPriceDesc() {
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setSortingFieldName("price");
@@ -197,7 +198,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by non-existing genre id")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
     public void testFindByGenreOutOfRange() {
         //when
         List<Movie> actualMovies = movieDao.findByGenre(17, new MovieRequest());
@@ -223,13 +224,14 @@ class JdbcMovieDaoITest {
                 .build();
         //when
         Movie actualMovie = movieDao.findById(1L);
-        assertEquals(expectedMovie, actualMovie);
+        assertTrue(new ReflectionEquals(expectedMovie).matches(actualMovie));
     }
 
     @DisplayName("Add new movie to DB")
     @Test
-    @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml", cleanBefore = true, cleanAfter = true)
     @ExpectedDataSet(value = "tables_after_adding_new_movie.xml")
+    @Order(1)
     void testAddNew() {
         //prepare
         Movie newMovie = Movie.builder().nameNative("New movie").nameRussian("Новый фильм").yearOfRelease(2020)
@@ -242,8 +244,9 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Update info of existing movie in DB without changed genres/countries")
     @Test
-    @DataSet(value = "movies.xml", cleanBefore = true)
+    @DataSet(value = "movies.xml", cleanBefore = true, cleanAfter = true)
     @ExpectedDataSet(value = "movies_after_movie_edited.xml")
+    @Order(2)
     void testEditMovie() {
         //prepare
         Movie updatedMovie = Movie.builder().id(2L).nameRussian("Изменное название").price(200.1).picturePath("newPoster.jpg").build();
@@ -254,8 +257,9 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Update info of existing movie in DB with changed genres/countries")
     @Test
-    @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml", cleanBefore = true, cleanAfter = true)
     @ExpectedDataSet(value = "tables_after_movie_has_been_edited.xml")
+    @Order(3)
     void testEditMovieWithGenresAndCountries() {
         //prepare
         Movie updatedMovie = Movie.builder().id(3L).nameRussian("Изменное название").price(200.1).picturePath("newPoster.jpg")
