@@ -9,6 +9,6 @@ import java.sql.SQLException;
 public class CountryRowMapper implements RowMapper<Country> {
     @Override
     public Country mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        return Country.builder().id(resultSet.getInt("id")).name(resultSet.getString("name")).build();
+        return Country.builder().id(resultSet.getLong("id")).name(resultSet.getString("name")).build();
     }
 }

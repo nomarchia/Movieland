@@ -1,13 +1,11 @@
 package org.nomarch.movieland.dto.movie;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-@Builder
-public class MovieDTO {
+public class MovieReceivedDTO {
     private String nameRussian;
     private String nameNative;
     private Integer yearOfRelease;

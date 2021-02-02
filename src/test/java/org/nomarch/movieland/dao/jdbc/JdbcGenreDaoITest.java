@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
@@ -27,7 +28,7 @@ class JdbcGenreDaoITest {
 
     @DisplayName("Get all genres from DB")
     @Test
-    @DataSet(value = {"genres.xml", "movies.xml", "movie_to_genre.xml"}, cleanBefore = true)
+    @DataSet(value = {"genres.xml"}, cleanBefore = true)
     void testGetAll() {
         //prepare
         Genre expectedFirst = Genre.builder().id(1).name("драма").build();
@@ -40,5 +41,21 @@ class JdbcGenreDaoITest {
         assertEquals(5, actualGenres.size());
         assertEquals(expectedFirst, actualGenres.get(0));
         assertEquals(expectedLast, actualGenres.get(4));
+    }
+
+    @DisplayName("Get all genres by movie id")
+    @Test
+    @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", cleanBefore = true)
+    void testGetGenresByMovieId() {
+        //prepare
+        Genre expected = Genre.builder().id(5).name("мелодрама").build();
+
+        //when
+        List<Genre> actualGenres = jdbcGenreDao.findByMovieId(5L);
+
+        //then
+        assertNotNull(actualGenres);
+        assertEquals(1, actualGenres.size());
+        assertEquals(expected, actualGenres.get(0));
     }
 }

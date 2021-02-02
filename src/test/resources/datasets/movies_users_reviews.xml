@@ -1,12 +1,19 @@
 <dataset>
     <MOVIES id="1" name_native="The Shawshank Redemption" name_russian="Побег из Шоушенка"
             year="1994" description="a" rating="8.9" price="123.45" poster_img="image1.jpg"/>
-    <MOVIES id="2" name_native="Forrest Gump" name_russian="Изменное название"
-            year="1994" description="b" rating="8.6" price="200.1" poster_img="newPoster.jpg"/>
+    <MOVIES id="2" name_native="Forrest Gump" name_russian="Форрест Гамп"
+            year="1994" description="b" rating="8.6" price="200.60" poster_img="image2.jpg"/>
     <MOVIES id="3" name_native="La vita è bella" name_russian="Жизнь прекрасна"
             year="1997" description="c" rating="8.2" price="145.99" poster_img="image3.jpg"/>
     <MOVIES id="4" name_native="Titanic" name_russian="Титаник"
             year="1997" description="d" rating="7.9" price="150.00" poster_img="image4.jpg"/>
     <MOVIES id="5" name_native="Dances with Wolves" name_russian="Танцующий с волками"
             year="1990" description="e" rating="8.00" price="120.55" poster_img="image5.jpg"/>
+
+    <USERS id="1" full_name="Рамзес Второй" email="ramzes@egyptmail.com" password="mummy" />
+    <USERS id="2" full_name="Ганнибал Барка" email="hannibal@carthagen.eu" password="alps"/>
+
+    <REVIEWS id="2" movie_id ="2" user_id="1" text="Eastern european art-house crap..."/>
+    <REVIEWS id="3" movie_id ="3" user_id="2" text="Trashy one but seems to be cool."/>
+    <REVIEWS id="4" movie_id ="1" user_id="2" text="Very good one!"/>
 </dataset>

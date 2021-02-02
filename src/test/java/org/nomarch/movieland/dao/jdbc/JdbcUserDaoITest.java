@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
+import org.nomarch.movieland.dao.UserDao;
 import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
@@ -19,27 +20,28 @@ import static org.junit.jupiter.api.Assertions.*;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet(value = {"users.xml", "user_roles.xml"})
 class JdbcUserDaoITest {
     @Autowired
-    private JdbcUserDao jdbcUserDao;
+    private UserDao userDao;
 
     @DisplayName("Test login - get a user with its id and full name after checking his email and password")
     @Test
+    @DataSet(value = "users_and_user_roles.xml")
     void testLogin() {
         //prepare
         String expectedFullName = "Рамзес Второй";
         //when
-        User actualUser = jdbcUserDao.login("ramzes@egyptmail.com", "mummy");
+        User actualUser = userDao.login("ramzes@egyptmail.com", "mummy");
         //then
-        assertEquals(expectedFullName, actualUser.getFullName());
+        assertEquals(expectedFullName, actualUser.getNickname());
         assertEquals(1, actualUser.getId());
         assertEquals(UserRole.USER, actualUser.getRole());
     }
 
     @DisplayName("Test login with non-existing value")
     @Test
+    @DataSet(value = "users_and_user_roles.xml")
     void testLoginWithNonExistingValue() {
-        assertThrows(IncorrectCredentialsException.class, () -> jdbcUserDao.login("wrong@email", "wrongPassword"));
+        assertThrows(IncorrectCredentialsException.class, () -> userDao.login("wrong@email", "wrongPassword"));
     }
 }
