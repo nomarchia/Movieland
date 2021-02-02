@@ -14,10 +14,9 @@ CREATE TABLE movies (
     id SERIAL PRIMARY KEY,
     name_native VARCHAR(200) NOT NULL,
     name_russian VARCHAR(200) NOT NULL,
-    country VARCHAR(120) NOT NULL,
     year BIGINT NOT NULL,
     description TEXT NOT NULL,
-    rating DOUBLE PRECISION NOT NULL,
+    rating DOUBLE PRECISION,
     price DOUBLE PRECISION  NOT NULL,
     poster_img VARCHAR
 );
@@ -42,6 +41,21 @@ CREATE TABLE reviews (
 CREATE TABLE countries (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE movie_to_country (
+    column_id SERIAL PRIMARY KEY,
+    movie_id INTEGER NOT NULL,
+    country_id INTEGER NOT NULL,
+    CONSTRAINT FK_movie_id FOREIGN KEY (movie_id) REFERENCES movies(id),
+    CONSTRAINT FK_genre_id FOREIGN KEY (country_id) REFERENCES countries(id)
+);
+
+CREATE TABLE user_role (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    role INTEGER NOT NULL,
+    CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 

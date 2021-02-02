@@ -28,9 +28,9 @@ class CachedGenreDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // TODO: Test work well on my machine and checks that cache works.
+    //TODO: Test work well on my machine and checks that cache works.
     // I remember you said something about that test, but didn't said what's wrong exactly.
-    // I suppose that's something is bad with injecting jdbcTemplate bean and using it/
+    // I suppose that's something is bad with injecting jdbcTemplate bean and using it
     // If this test is bad, please explain how to implement such test in a better way.
     @DisplayName("Test genres cache auto-update after interval")
     @Test

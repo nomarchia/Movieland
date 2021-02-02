@@ -54,7 +54,7 @@ public class SecurityTokenService implements SecurityService {
     }
 
     @Override
-    public long findUserIdByUUIDToken(@NonNull String uuidToken) {
+    public User findUserByUUIDToken(@NonNull String uuidToken) {
         Session session = uuidSessionCacheMap.get(uuidToken);
 
         if (session == null || LocalDateTime.now().isAfter(session.getExpiryTime())) {
@@ -62,7 +62,7 @@ public class SecurityTokenService implements SecurityService {
             throw new IncorrectCredentialsException("UUID token is invalid or expired: " + uuidToken);
         }
 
-        return session.getUser().getId();
+        return session.getUser();
     }
 
     @Scheduled(fixedRateString = "${user.uuid.cache.clear.interval}")

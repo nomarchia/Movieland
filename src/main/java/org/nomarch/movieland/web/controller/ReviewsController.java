@@ -3,6 +3,7 @@ package org.nomarch.movieland.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dto.ReviewRequest;
 import org.nomarch.movieland.entity.Review;
+import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.security.impl.SecurityTokenService;
 import org.nomarch.movieland.service.impl.DefaultReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class ReviewsController {
 
     @PostMapping(value = "review")
     public void addReview(@RequestHeader String uuid, @RequestBody ReviewRequest reviewRequest) {
-        long userId = securityTokenService.findUserIdByUUIDToken(uuid);
+        User user = securityTokenService.findUserByUUIDToken(uuid);
 
-        Review newReview = Review.builder().movieId(reviewRequest.getMovieId()).userId(userId).text(reviewRequest.getText()).build();
+        Review newReview = Review.builder().movieId(reviewRequest.getMovieId()).userId(user.getId()).text(reviewRequest.getText()).build();
 
         defaultReviewService.save(newReview);
     }
