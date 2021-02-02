@@ -2,6 +2,7 @@ package org.nomarch.movieland.web.json;
 
 import org.junit.jupiter.api.*;
 import org.nomarch.movieland.RootApplicationContext;
+import org.nomarch.movieland.common.currency.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -16,19 +17,19 @@ class CurrencyParserITest {
     CurrencyParser currencyParser;
 
     @Test
-    @DisplayName("Test parsing NBU rates json from official site")
+    @DisplayName("Test get USD and EUR currency rates after parsing NBU json from official site")
     @Order(1)
-    void testParseCurrency() {
+    void testGetCurrencyRate() {
         //when
-        Map<String, Double> rates = currencyParser.parseCurrency();
+        Map<Currency, Double> rates = currencyParser.getCurrencyRates();
 
         //then
         assertNotNull(rates);
         assertEquals(2, rates.size());
-        assertTrue(rates.containsKey("USD"));
-        assertTrue(rates.containsKey("EUR"));
-        assertTrue(rates.get("USD") > 00.0);
-        assertTrue(rates.get("EUR") > 00.0);
+        assertTrue(rates.containsKey(Currency.USD));
+        assertTrue(rates.containsKey(Currency.EUR));
+        assertTrue(rates.get(Currency.USD) > 00.0);
+        assertTrue(rates.get(Currency.EUR) > 00.0);
     }
 
     @Test
@@ -36,9 +37,10 @@ class CurrencyParserITest {
     @Order(2)
     void testParseCurrencyWithIncorrectURL() {
         //prepare
+        currencyParser = new CurrencyParser();
         currencyParser.setNbuJsonUrl("incorrectUrl");
 
         //when
-        assertThrows(RuntimeException.class, () -> currencyParser.parseCurrency());
+        assertThrows(RuntimeException.class, () -> currencyParser.getCurrencyRates());
     }
 }

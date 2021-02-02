@@ -1,6 +1,8 @@
 package org.nomarch.movieland.service;
 
-import org.nomarch.movieland.dto.movie.MovieDTO;
+import org.nomarch.movieland.common.currency.Currency;
+import org.nomarch.movieland.dto.movie.MovieReceivedDTO;
+import org.nomarch.movieland.dto.movie.MovieReturnedDTO;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.dto.movie.MovieRequest;
 
@@ -13,9 +15,9 @@ public interface MovieService {
 
     List<Movie> findByGenre(Integer genreId, MovieRequest movieRequest);
 
-    Movie findById(Integer movieId, String currency);
+    MovieReturnedDTO findById(Long movieId, Currency currency);
 
-    void add(MovieDTO newMovie);
+    void add(MovieReceivedDTO newMovie);
 
-    void edit(Integer movieId, MovieDTO movie);
+    void edit(Long movieId, MovieReceivedDTO movie);
 }

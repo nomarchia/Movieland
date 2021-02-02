@@ -1,0 +1,24 @@
+<dataset>
+    <MOVIES id="1" name_native="The Shawshank Redemption" name_russian="Побег из Шоушенка"
+            year="1994" description="a" rating="8.9" price="123.45" poster_img="image1.jpg"/>
+    <MOVIES id="2" name_native="Forrest Gump" name_russian="Форрест Гамп"
+            year="1994" description="b" rating="8.6" price="200.60" poster_img="image2.jpg"/>
+    <MOVIES id="3" name_native="La vita è bella" name_russian="Жизнь прекрасна"
+            year="1997" description="c" rating="8.2" price="145.99" poster_img="image3.jpg"/>
+    <MOVIES id="4" name_native="Titanic" name_russian="Титаник"
+            year="1997" description="d" rating="7.9" price="150.00" poster_img="image4.jpg"/>
+    <MOVIES id="5" name_native="Dances with Wolves" name_russian="Танцующий с волками"
+            year="1990" description="e" rating="8.00" price="120.55" poster_img="image5.jpg"/>
+
+    <GENRES id="1" name="драма"/>
+    <GENRES id="2" name="криминал"/>
+    <GENRES id="3" name="фэнтези"/>
+    <GENRES id="4" name="детектив"/>
+    <GENRES id="5" name="мелодрама"/>
+
+    <MOVIE_TO_GENRE column_id="3" movie_id="3" genre_id="5" />
+    <MOVIE_TO_GENRE column_id="2" movie_id="2" genre_id="5" />
+    <MOVIE_TO_GENRE column_id="4" movie_id="4" genre_id="5" />
+    <MOVIE_TO_GENRE column_id="1" movie_id="1" genre_id="1" />
+    <MOVIE_TO_GENRE column_id="5" movie_id="5" genre_id="1" />
+</dataset>

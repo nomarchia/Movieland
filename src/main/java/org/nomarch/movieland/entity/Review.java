@@ -1,12 +1,17 @@
 package org.nomarch.movieland.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Builder
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Review {
-    private int movieId;
-    private long userId;
+    private Long id;
+    private Long movieId;
+    private User user;
     private String text;
 }
+
+

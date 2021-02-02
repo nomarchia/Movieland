@@ -1,0 +1,7 @@
+<dataset>
+    <GENRES id="1" name="драма"/>
+    <GENRES id="2" name="криминал"/>
+    <GENRES id="3" name="фэнтези"/>
+    <GENRES id="4" name="детектив"/>
+    <GENRES id="5" name="мелодрама"/>
+</dataset>

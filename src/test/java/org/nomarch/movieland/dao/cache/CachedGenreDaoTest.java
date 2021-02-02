@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet(value = {"movies.xml", "genres.xml", "movie_to_genre.xml"})
 class CachedGenreDaoTest {
     @Autowired
     private GenreDao cachedGenreDao;
@@ -34,6 +33,7 @@ class CachedGenreDaoTest {
     // If this test is bad, please explain how to implement such test in a better way.
     @DisplayName("Test genres cache auto-update after interval")
     @Test
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true)
     void testUpdateGenresCache() throws InterruptedException {
         log.info("Sleep thread for 15 seconds to wait cache to be updated from DB");
         Thread.sleep(15000);

@@ -17,12 +17,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CachedGenreDao implements GenreDao {
     @Autowired
     private GenreDao jdbcGenreDao;
-    private volatile List<Genre> genresCache = new CopyOnWriteArrayList<>();
+    private final List<Genre> genresCache = new CopyOnWriteArrayList<>();
 
     @Override
     public List<Genre> findAll() {
         log.debug("Returning all genres from the cache");
         return genresCache;
+    }
+
+    @Override
+    public List<Genre> findByMovieId(Long movieId) {
+        return jdbcGenreDao.findByMovieId(movieId);
     }
 
     @Scheduled(fixedRateString = "${movies.cache.renew.interval}")

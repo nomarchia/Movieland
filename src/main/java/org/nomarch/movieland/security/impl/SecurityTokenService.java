@@ -2,7 +2,7 @@ package org.nomarch.movieland.security.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.jdbc.JdbcUserDao;
-import org.nomarch.movieland.dto.UserUUID;
+import org.nomarch.movieland.dto.user.UserUUID;
 import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
 import org.nomarch.movieland.security.SecurityService;
@@ -42,7 +42,7 @@ public class SecurityTokenService implements SecurityService {
 
         uuidSessionCacheMap.put(uuid.toString(), session);
 
-        return UserUUID.builder().uuid(uuid.toString()).nickname(user.getFullName()).build();
+        return UserUUID.builder().uuid(uuid.toString()).nickname(user.getNickname()).build();
     }
 
     @Override

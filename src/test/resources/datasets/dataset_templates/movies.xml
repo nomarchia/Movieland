@@ -9,6 +9,4 @@
             year="1997" description="d" rating="7.9" price="150.00" poster_img="image4.jpg"/>
     <MOVIES id="5" name_native="Dances with Wolves" name_russian="Танцующий с волками"
             year="1990" description="e" rating="8.00" price="120.55" poster_img="image5.jpg"/>
-    <MOVIES id="6" name_native="New movie" name_russian="Новый фильм"
-            year="2020" description="Description" price="69.99" poster_img="image6.jpg"/>
 </dataset>

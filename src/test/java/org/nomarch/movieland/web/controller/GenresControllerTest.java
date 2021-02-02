@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.nomarch.movieland.entity.Genre;
-import org.nomarch.movieland.service.impl.DefaultGenreService;
+import org.nomarch.movieland.service.GenreService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class GenresControllerTest {
     @Mock
-    private DefaultGenreService genreService;
+    private GenreService genreService;
 
     @InjectMocks
     private GenresController genresController;
@@ -48,7 +48,7 @@ class GenresControllerTest {
 
 
         //when
-        mockMvc.perform(get("/api/v1/genre"))
+        mockMvc.perform(get("/genre"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
 

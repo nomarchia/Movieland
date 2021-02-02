@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CountryDao {
     List<Country> findAll();
+
+    List<Country> findByMovieId(Long movieId);
 }

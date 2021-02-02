@@ -1,28 +1,32 @@
 package org.nomarch.movieland.service.impl;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.nomarch.movieland.common.currency.Currency;
 import org.nomarch.movieland.dao.MovieDao;
-import org.nomarch.movieland.dto.movie.MovieDTO;
+import org.nomarch.movieland.dto.movie.MovieReceivedDTO;
+import org.nomarch.movieland.dto.movie.MovieReturnedDTO;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.service.MovieService;
+import org.nomarch.movieland.service.*;
 import org.nomarch.movieland.dto.movie.MovieRequest;
-import org.nomarch.movieland.web.json.CurrencyParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class DefaultMovieService implements MovieService {
-    @Autowired
-    private MovieDao movieDao;
+    private final MovieDao movieDao;
+    private final CurrencyService currencyService;
+    private final GenreService genreService;
+    private final CountryService countryService;
+    private final ReviewService reviewService;
+    private final ModelMapper modelMapper;
     @Value("${random.movies.amount:3}")
     private Integer moviesAmount;
-    @Autowired
-    private CurrencyParser currencyParser;
 
     private Map<String, Double> rates;
 
@@ -42,27 +46,31 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public Movie findById(Integer movieId, String currency) {
+    public MovieReturnedDTO findById(Long movieId, Currency currency) {
         Movie movie = movieDao.findById(movieId);
-        Double currencyRate = rates.get(currency);
+        Double currencyRate = currencyService.getCurrencyRate(currency);
 
         movie.setPrice(movie.getPrice() / currencyRate);
 
-        return movie;
+        MovieReturnedDTO movieDTO = modelMapper.map(movie, MovieReturnedDTO.class);
+
+        movieDTO.setGenreList(genreService.findByMovieId(movieId));
+        movieDTO.setCountryList(countryService.findByMovieId(movieId));
+        movieDTO.setReviewList(reviewService.findByMovieId(movieId));
+
+        return movieDTO;
     }
 
     @Override
-    public void add(MovieDTO newMovie) {
-        movieDao.add(newMovie);
+    public void add(MovieReceivedDTO newMovie) {
+        Movie movie = modelMapper.map(newMovie, Movie.class);
+        movieDao.add(movie);
     }
 
     @Override
-    public void edit(Integer movieId, MovieDTO movie) {
-        movieDao.edit(movieId, movie);
-    }
-
-    @Scheduled(fixedRateString = "${nbu.rates.renew.interval}")
-    private void getNBURates() {
-        rates = currencyParser.parseCurrency();
+    public void edit(Long movieId, MovieReceivedDTO editedMovie) {
+        Movie movie = modelMapper.map(editedMovie, Movie.class);
+        movie.setId(movieId);
+        movieDao.edit(movie);
     }
 }

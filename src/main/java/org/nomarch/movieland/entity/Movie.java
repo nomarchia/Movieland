@@ -1,18 +1,24 @@
 package org.nomarch.movieland.entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+import java.util.List;
+
 @Builder
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Movie {
-    private int id;
+    private Long id;
     private String nameNative;
     private String nameRussian;
-    private String country;
-    private int year;
+    private Integer yearOfRelease;
     private String description;
     private Double rating;
     private Double price;
-    private String posterImg;
+    private String picturePath;
+    private int[] genres;
+    private int[] countries;
+    private int[] reviews;
 }
