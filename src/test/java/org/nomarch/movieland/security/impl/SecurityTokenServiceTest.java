@@ -10,10 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
-import org.nomarch.movieland.dto.UserUUID;
+import org.nomarch.movieland.dto.user.UserUUID;
 import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
+import org.nomarch.movieland.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -23,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
 @SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
-@DataSet(value = {"users.xml", "user_roles.xml"})
 class SecurityTokenServiceTest {
     @Autowired
-    SecurityTokenService securityTokenService;
+    SecurityService securityService;
 
     @DisplayName("Login with correct credentials")
     @Test
+    @DataSet(value = "users_and_user_roles.xml")
     void testLogin() {
         //when
-        UserUUID userUUID = securityTokenService.login("ramzes@egyptmail.com", "mummy");
+        UserUUID userUUID = securityService.login("ramzes@egyptmail.com", "mummy");
 
         //then
         assertNotNull(userUUID);
@@ -42,19 +43,21 @@ class SecurityTokenServiceTest {
 
     @DisplayName("Login with incorrect credentials")
     @Test
+    @DataSet(value = "users_and_user_roles.xml")
     void testLoginWithWrongCredentials() {
-        assertThrows(IncorrectCredentialsException.class, () -> securityTokenService.login("wrong@email", "wrongPassword"));
+        assertThrows(IncorrectCredentialsException.class, () -> securityService.login("wrong@email", "wrongPassword"));
     }
 
     @DisplayName("Validate uuid token and get a user associated with this token")
     @Test
+    @DataSet(value = "users_and_user_roles.xml")
     void testValidateUUID() {
         //prepare
-        UserUUID userUUID = securityTokenService.login("ramzes@egyptmail.com", "mummy");
+        UserUUID userUUID = securityService.login("ramzes@egyptmail.com", "mummy");
         assertNotNull(userUUID);
 
         //when
-        User user = securityTokenService.findUserByUUIDToken(userUUID.getUuid());
+        User user = securityService.findUserByUUIDToken(userUUID.getUuid());
 
         //then
         assertEquals(1, user.getId());
@@ -65,19 +68,20 @@ class SecurityTokenServiceTest {
     // But I don't know how else I can write such test like this one
     @DisplayName("Clear session from cache when expiry time is reached")
     @Test
+    @DataSet(value = "users_and_user_roles.xml")
     void clearExpiredSessionFromCache() throws InterruptedException {
         //prepare
-        User expectedUser = User.builder().id(1).fullName("Рамзес Второй").role(UserRole.USER).build();
+        User expectedUser = User.builder().id(1L).nickname("Рамзес Второй").role(UserRole.USER).build();
         log.info("Login and acquire a uuid");
-        UserUUID userUUID = securityTokenService.login("ramzes@egyptmail.com", "mummy");
+        UserUUID userUUID = securityService.login("ramzes@egyptmail.com", "mummy");
         log.info("Check that new uuid was added to the cache (uuid lifetime is 10 second)");
-        assertTrue(new ReflectionEquals(expectedUser).matches(securityTokenService.findUserByUUIDToken(userUUID.getUuid())));
+        assertTrue(new ReflectionEquals(expectedUser).matches(securityService.findUserByUUIDToken(userUUID.getUuid())));
 
         log.info("Sleep thread for 15 seconds (cache clearing interval is every 10 seconds)");
         Thread.sleep(15000);
 
         //then
         log.info("Check that entry with current uuid was cleared from the cache");
-        assertThrows(IncorrectCredentialsException.class, () -> securityTokenService.findUserByUUIDToken(userUUID.getUuid()));
+        assertThrows(IncorrectCredentialsException.class, () -> securityService.findUserByUUIDToken(userUUID.getUuid()));
     }
 }

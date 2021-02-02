@@ -1,32 +1,36 @@
 package org.nomarch.movieland.web.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.nomarch.movieland.dto.ReviewRequest;
+import org.modelmapper.ModelMapper;
+import org.nomarch.movieland.dto.review.ReviewReceivedDTO;
 import org.nomarch.movieland.entity.Review;
 import org.nomarch.movieland.entity.User;
-import org.nomarch.movieland.security.impl.SecurityTokenService;
-import org.nomarch.movieland.service.impl.DefaultReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.nomarch.movieland.security.SecurityService;
+import org.nomarch.movieland.service.ReviewService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/v1/", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class ReviewsController {
-    @Autowired
-    private SecurityTokenService securityTokenService;
-    @Autowired
-    private DefaultReviewService defaultReviewService;
+    private final SecurityService securityService;
+    private final ReviewService reviewService;
+    private final ModelMapper mapper;
 
     @PostMapping(value = "review")
-    public void addReview(@RequestHeader String uuid, @RequestBody ReviewRequest reviewRequest) {
+    @ResponseStatus(HttpStatus.OK)
+    public void addReview(@RequestHeader String uuid, @RequestBody ReviewReceivedDTO reviewDTO) {
         log.debug("POST request by url \"/api/v1/review\" for user with token: {}", uuid);
-        User user = securityTokenService.findUserByUUIDToken(uuid);
+        User user = securityService.findUserByUUIDToken(uuid);
 
-        Review newReview = Review.builder().movieId(reviewRequest.getMovieId()).userId(user.getId()).text(reviewRequest.getText()).build();
+        Review newReview = mapper.map(reviewDTO, Review.class);
+        newReview.setUser(user);
 
         log.debug("Saving new review: {}", newReview);
-        defaultReviewService.save(newReview);
+        reviewService.save(newReview);
     }
 }
