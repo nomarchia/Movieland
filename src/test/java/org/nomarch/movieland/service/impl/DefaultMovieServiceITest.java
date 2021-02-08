@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
-import org.nomarch.movieland.common.currency.Currency;
-import org.nomarch.movieland.dto.movie.MovieReturnedDTO;
+import org.nomarch.movieland.common.Currency;
+import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -26,12 +26,12 @@ class DefaultMovieServiceITest {
 
     @DisplayName("Get reviews movie by id")
     @Test
-    @DataSet(value = "movies_genres_countries_and_reviews.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_countries_and_reviews.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindById() {
         //prepare
 
         //when
-        MovieReturnedDTO returnedDTO = movieService.findById(2L, Currency.USD);
+        FullMovieDto returnedDTO = movieService.findById(2L, Currency.USD);
 
         //then
         assertNotNull(returnedDTO);

@@ -4,11 +4,9 @@ import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.nomarch.movieland.common.currency.Currency;
-import org.nomarch.movieland.common.sorting.SortingOrder;
+import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.service.MovieService;
-import org.nomarch.movieland.dto.movie.MovieRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
@@ -21,33 +19,28 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@TestInstance(PER_CLASS)
+@TestInstance(PER_METHOD)
 class MoviesControllerTest {
     @Mock
     private MovieService movieService;
-
     @InjectMocks
     private MoviesController moviesController;
-
     private MockMvc mockMvc;
     private List<Movie> expectedMovies;
-
-    @BeforeAll
-    public void setUpExpectedResults() {
-        expectedMovies = createExpectedMovies();
-    }
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(moviesController).build();
+
+        expectedMovies = createExpectedMovies();
     }
 
     @DisplayName("Get all movies by get(/api/v1/movie) request")
     @Test
     void testGetAll() throws Exception {
         //prepare
-        when(movieService.findAll(any(MovieRequest.class))).thenReturn(expectedMovies);
+        when(movieService.findAll(any(SortingOrder.class))).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie"))
@@ -84,10 +77,9 @@ class MoviesControllerTest {
     @Test
     void testGetAllWithPriceSortingParam() throws Exception {
         //prepare
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setSortingFieldName("price");
-        movieRequest.setSortingOrder(SortingOrder.DESC);
-        when(movieService.findAll(movieRequest)).thenReturn(expectedMovies);
+        SortingOrder priceOrder = SortingOrder.DESC;
+        priceOrder.setParameterName("price");
+        when(movieService.findAll(priceOrder)).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie?price=DESC"))
@@ -130,7 +122,7 @@ class MoviesControllerTest {
         mockMvc.perform(get("/movie/random"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-//                .andExpect(jsonPath("$.size()").value(3))
+                .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nameNative").value("The Shawshank Redemption"))
@@ -161,13 +153,13 @@ class MoviesControllerTest {
     @Test
     void testGetMoviesByGenre() throws Exception {
         //prepare
-        when(movieService.findByGenre(1, new MovieRequest())).thenReturn(expectedMovies);
+        when(movieService.findByGenre(1, SortingOrder.NULL)).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie/genre/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.size()").value(3))
+//                .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nameNative").value("The Shawshank Redemption"))
@@ -198,16 +190,16 @@ class MoviesControllerTest {
     @Test
     void testGetMoviesByGenreWithRatingSortingParam() throws Exception {
         //prepare
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setSortingFieldName("rating");
-        movieRequest.setSortingOrder(SortingOrder.ASC);
-        when(movieService.findByGenre(1, movieRequest)).thenReturn(expectedMovies);
+        SortingOrder ratingOrder = SortingOrder.ASC;
+        ratingOrder.setParameterName("rating");
+
+        when(movieService.findByGenre(1, ratingOrder)).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie/genre/1?rating=ASC"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.size()").value(3))
+//                .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nameNative").value("The Shawshank Redemption"))

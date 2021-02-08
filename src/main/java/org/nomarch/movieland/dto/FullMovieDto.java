@@ -1,9 +1,8 @@
-package org.nomarch.movieland.dto.movie;
+package org.nomarch.movieland.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.nomarch.movieland.dto.review.ReviewReturnedDTO;
 import org.nomarch.movieland.entity.Country;
 import org.nomarch.movieland.entity.Genre;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class MovieReturnedDTO {
+public class FullMovieDto {
     private Long id;
     private String nameRussian;
     private String nameNative;
@@ -22,5 +21,5 @@ public class MovieReturnedDTO {
     private String picturePath;
     private List<Country> countryList;
     private List<Genre> genreList;
-    private List<ReviewReturnedDTO> reviewList;
+    private List<ReviewDto> reviewList;
 }
