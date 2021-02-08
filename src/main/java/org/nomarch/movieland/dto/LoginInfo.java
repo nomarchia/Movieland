@@ -1,11 +1,11 @@
-package org.nomarch.movieland.dto.user;
+package org.nomarch.movieland.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class UserUUID {
+public class LoginInfo {
     private String uuid;
     private String nickname;
 }

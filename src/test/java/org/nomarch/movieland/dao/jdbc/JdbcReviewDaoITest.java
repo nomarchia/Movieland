@@ -29,7 +29,7 @@ class JdbcReviewDaoITest {
 
     @DisplayName("Insert new review into the DB")
     @Test
-    @DataSet(value = "movies_users_reviews.xml", cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "movies_users_reviews.xml", cleanAfter = true, cleanBefore = true, skipCleaningFor = {"genres"})
     @ExpectedDataSet(value = "expected_reviews.xml")
     void testSaveReview() {
         //prepare
@@ -42,7 +42,7 @@ class JdbcReviewDaoITest {
 
     @DisplayName("Get all reviews by movie id")
     @Test
-    @DataSet(value = "movies_users_reviews.xml", cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "movies_users_reviews.xml", cleanAfter = true, cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindByMovieId() {
         //prepare
         Review expectedReview = Review.builder().id(2L).text("Eastern european art-house crap...").build();

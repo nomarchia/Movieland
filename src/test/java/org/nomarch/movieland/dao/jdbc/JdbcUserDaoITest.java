@@ -26,7 +26,7 @@ class JdbcUserDaoITest {
 
     @DisplayName("Test login - get a user with its id and full name after checking his email and password")
     @Test
-    @DataSet(value = "users_and_user_roles.xml")
+    @DataSet(value = "users_and_user_roles.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testLogin() {
         //prepare
         String expectedFullName = "Рамзес Второй";
@@ -40,7 +40,7 @@ class JdbcUserDaoITest {
 
     @DisplayName("Test login with non-existing value")
     @Test
-    @DataSet(value = "users_and_user_roles.xml")
+    @DataSet(value = "users_and_user_roles.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testLoginWithNonExistingValue() {
         assertThrows(IncorrectCredentialsException.class, () -> userDao.login("wrong@email", "wrongPassword"));
     }

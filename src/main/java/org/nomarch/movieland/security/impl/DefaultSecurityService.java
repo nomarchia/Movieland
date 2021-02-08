@@ -1,15 +1,15 @@
 package org.nomarch.movieland.security.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.nomarch.movieland.dao.jdbc.JdbcUserDao;
-import org.nomarch.movieland.dto.user.UserUUID;
+import org.nomarch.movieland.dao.UserDao;
+import org.nomarch.movieland.dto.LoginInfo;
 import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
 import org.nomarch.movieland.security.SecurityService;
 import org.nomarch.movieland.security.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,18 +20,18 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
-@PropertySource(value = "classpath:application.properties")
-public class SecurityTokenService implements SecurityService {
+public class DefaultSecurityService implements SecurityService {
     @Autowired
-    private JdbcUserDao jdbcUserDao;
+    private final UserDao userDao;
     @Value("${uuid.lifetime.in.seconds}")
     private int uuidLifeTimeInSeconds;
     private final Map<String, Session> uuidSessionCacheMap = new HashMap<>();
 
     @Override
-    public UserUUID login(@NonNull String email, @NonNull String password) {
-        User user = jdbcUserDao.login(email, password);
+    public LoginInfo login(@NonNull String email, @NonNull String password) {
+        User user = userDao.login(email, password);
 
         UUID uuid = UUID.randomUUID();
         Session session = Session.builder()
@@ -42,7 +42,7 @@ public class SecurityTokenService implements SecurityService {
 
         uuidSessionCacheMap.put(uuid.toString(), session);
 
-        return UserUUID.builder().uuid(uuid.toString()).nickname(user.getNickname()).build();
+        return LoginInfo.builder().uuid(uuid.toString()).nickname(user.getNickname()).build();
     }
 
     @Override
