@@ -46,7 +46,6 @@ class GenresControllerTest {
         when(genreService.findAll())
                 .thenReturn(expectedGenres);
 
-
         //when
         mockMvc.perform(get("/genre"))
                 .andExpect(status().isOk())

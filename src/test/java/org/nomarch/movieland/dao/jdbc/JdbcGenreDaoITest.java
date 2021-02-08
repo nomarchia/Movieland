@@ -4,6 +4,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.GenreDao;
@@ -16,8 +17,7 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DBRider
 @DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
@@ -28,24 +28,23 @@ class JdbcGenreDaoITest {
 
     @DisplayName("Get all genres from DB")
     @Test
-    @DataSet(value = {"genres.xml"}, cleanBefore = true)
     void testGetAll() {
         //prepare
         Genre expectedFirst = Genre.builder().id(1).name("драма").build();
-        Genre expectedLast = Genre.builder().id(5).name("мелодрама").build();
+        Genre expectedFifth = Genre.builder().id(5).name("мелодрама").build();
 
         //when
         List<Genre> actualGenres = jdbcGenreDao.findAll();
 
         //then
         assertEquals(5, actualGenres.size());
-        assertEquals(expectedFirst, actualGenres.get(0));
-        assertEquals(expectedLast, actualGenres.get(4));
+        assertTrue(new ReflectionEquals(expectedFirst).matches(actualGenres.get(0)));
+        assertTrue(new ReflectionEquals(expectedFifth).matches(actualGenres.get(4)));
     }
 
     @DisplayName("Get all genres by movie id")
     @Test
-    @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", cleanBefore = true)
+    @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", skipCleaningFor = {"genres"})
     void testGetGenresByMovieId() {
         //prepare
         Genre expected = Genre.builder().id(5).name("мелодрама").build();
@@ -56,6 +55,6 @@ class JdbcGenreDaoITest {
         //then
         assertNotNull(actualGenres);
         assertEquals(1, actualGenres.size());
-        assertEquals(expected, actualGenres.get(0));
+        assertTrue(new ReflectionEquals(expected).matches(actualGenres.get(0)));
     }
 }

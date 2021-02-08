@@ -13,7 +13,6 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@Component("jdbcGenreDao")
 public class JdbcGenreDao implements GenreDao {
     private static final GenreRowMapper GENRE_ROW_MAPPER = new GenreRowMapper();
     private static final String FIND_ALL = "SELECT id, name FROM genres";
