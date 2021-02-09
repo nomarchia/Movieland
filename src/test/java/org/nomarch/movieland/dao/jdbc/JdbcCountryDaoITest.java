@@ -27,7 +27,7 @@ class JdbcCountryDaoITest {
 
     @DisplayName("Get all countries from DB")
     @Test
-    @DataSet(value = "countries.xml", cleanBefore = true)
+    @DataSet(value = "countries.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindAll() {
         //prepare
         Country expectedCountryOne = Country.builder().id(1L).name("США").build();
@@ -46,7 +46,7 @@ class JdbcCountryDaoITest {
 
     @DisplayName("Get all countries by movie id")
     @Test
-    @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", cleanBefore = true)
+    @DataSet(value = "movies_countries_movie_to_country.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testGetCountriesByMovieId() {
         //prepare
         Country expectedCountryOne = Country.builder().id(1L).name("США").build();

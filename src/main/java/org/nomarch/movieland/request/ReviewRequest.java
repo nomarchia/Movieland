@@ -1,11 +1,11 @@
-package org.nomarch.movieland.dto.review;
+package org.nomarch.movieland.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class ReviewReceivedDTO {
+public class ReviewRequest {
     private Long movieId;
     private String text;
 }

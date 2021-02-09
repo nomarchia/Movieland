@@ -1,13 +1,12 @@
 package org.nomarch.movieland.dao.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nomarch.movieland.common.sorting.util.ParamsUtil;
+import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.dao.MovieDao;
 import org.nomarch.movieland.dao.QueryGenerator;
 import org.nomarch.movieland.dao.jdbc.mapper.FullMovieRowMapper;
 import org.nomarch.movieland.dao.jdbc.mapper.MovieRowMapper;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.dto.movie.MovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -46,9 +45,9 @@ public class JdbcMovieDao implements MovieDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Movie> findAll(MovieRequest movieRequest) {
+    public List<Movie> findAll(SortingOrder sortingOrder) {
         log.debug("Get list of all movies from DB");
-        String query = ParamsUtil.appendSortingOrder(GET_ALL, movieRequest);
+        String query = QueryGenerator.appendSortingOrder(GET_ALL, sortingOrder);
         return jdbcTemplate.query(query, MOVIE_ROW_MAPPER);
     }
 
@@ -59,9 +58,9 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> findByGenre(Integer genreId, MovieRequest movieRequest) {
+    public List<Movie> findByGenre(Integer genreId, SortingOrder sortingOrder) {
         log.debug("Get list of movies by genre if from DB");
-        String query = ParamsUtil.appendSortingOrder(GET_BY_GENRE, movieRequest);
+        String query = QueryGenerator.appendSortingOrder(GET_BY_GENRE, sortingOrder);
 
         return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource("genre_id", genreId), MOVIE_ROW_MAPPER);
     }

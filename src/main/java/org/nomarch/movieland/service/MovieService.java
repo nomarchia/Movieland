@@ -1,23 +1,23 @@
 package org.nomarch.movieland.service;
 
-import org.nomarch.movieland.common.currency.Currency;
-import org.nomarch.movieland.dto.movie.MovieReceivedDTO;
-import org.nomarch.movieland.dto.movie.MovieReturnedDTO;
+import org.nomarch.movieland.common.Currency;
+import org.nomarch.movieland.common.SortingOrder;
+import org.nomarch.movieland.request.SaveMovieRequest;
+import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.dto.movie.MovieRequest;
 
 import java.util.List;
 
 public interface MovieService {
-    List<Movie> findAll(MovieRequest movieRequest);
+    List<Movie> findAll(SortingOrder sortingOrder);
 
     List<Movie> findRandom();
 
-    List<Movie> findByGenre(Integer genreId, MovieRequest movieRequest);
+    List<Movie> findByGenre(Integer genreId, SortingOrder sortingOrder);
 
-    MovieReturnedDTO findById(Long movieId, Currency currency);
+    FullMovieDto findById(Long movieId, Currency currency);
 
-    void add(MovieReceivedDTO newMovie);
+    void add(SaveMovieRequest newMovie);
 
-    void edit(Long movieId, MovieReceivedDTO movie);
+    void edit(Long movieId, SaveMovieRequest movie);
 }

@@ -1,15 +1,13 @@
 package org.nomarch.movieland.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.nomarch.movieland.dao.ReviewDao;
-import org.nomarch.movieland.dto.review.ReviewReturnedDTO;
-import org.nomarch.movieland.dto.user.UserReturnedDTO;
+import org.nomarch.movieland.dto.ReviewDto;
 import org.nomarch.movieland.entity.Review;
 import org.nomarch.movieland.entity.User;
+import org.nomarch.movieland.mapper.ReviewDtoMapper;
 import org.nomarch.movieland.service.ReviewService;
 import org.nomarch.movieland.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ import java.util.List;
 public class DefaultReviewService implements ReviewService {
     private final ReviewDao reviewDao;
     private final UserService userService;
-    private final ModelMapper mapper;
+    private final ReviewDtoMapper reviewDtoMapper;
 
     @Override
     public void save(Review review) {
@@ -28,17 +26,16 @@ public class DefaultReviewService implements ReviewService {
     }
 
     @Override
-    public List<ReviewReturnedDTO> findByMovieId(Long movieId) {
+    public List<ReviewDto> findByMovieId(Long movieId) {
         List<Review> reviews = reviewDao.findByMovieId(movieId);
-        List<ReviewReturnedDTO> reviewDTOS = new ArrayList<>();
+        List<ReviewDto> reviewDTOS = new ArrayList<>();
 
         for (Review review : reviews) {
-            ReviewReturnedDTO reviewReturnedDTO = mapper.map(review, ReviewReturnedDTO.class);
-
             User user = userService.findUserByReviewId(review.getId());
-            reviewReturnedDTO.setUser(mapper.map(user, UserReturnedDTO.class));
+            review.setUser(user);
+            ReviewDto reviewDto = reviewDtoMapper.reviewToDto(review);
 
-            reviewDTOS.add(reviewReturnedDTO);
+            reviewDTOS.add(reviewDto);
         }
 
         return reviewDTOS;

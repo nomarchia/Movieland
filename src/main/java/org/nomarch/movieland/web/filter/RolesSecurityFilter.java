@@ -4,6 +4,7 @@ import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.exception.InsufficientAccessRightsException;
 import org.nomarch.movieland.security.SecurityService;
+import org.nomarch.movieland.security.UserHolder;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -13,21 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "rolesSecurityFilter", urlPatterns = "/**")
+@WebFilter(filterName = "rolesSecurityFilter", urlPatterns = "/*")
 public class RolesSecurityFilter implements Filter {
     private SecurityService securityService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        ServletContext servletContext = filterConfig.getServletContext();
+        securityService = WebApplicationContextUtils.findWebApplicationContext(servletContext)
+                .getBean(SecurityService.class);
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        ServletContext servletContext = request.getServletContext();
-        securityService = WebApplicationContextUtils.findWebApplicationContext(servletContext)
-                .getBean(SecurityService.class);
-
         HttpServletRequest servletRequest = (HttpServletRequest) request;
 
         String requestURI = servletRequest.getRequestURI();
@@ -42,6 +41,8 @@ public class RolesSecurityFilter implements Filter {
         String uuid = servletRequest.getHeader("uuid");
         if (uuid != null) {
             User user = securityService.findUserByUUIDToken(uuid);
+            UserHolder.setUser(user);
+
             if (user.getRole() == UserRole.ADMIN) {
                 chain.doFilter(request, response);
             }

@@ -2,7 +2,6 @@ package org.nomarch.movieland.dao.cache;
 
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
-import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +10,6 @@ import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -27,20 +25,14 @@ class CachedGenreDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    //TODO: Test work well on my machine and checks that cache works.
-    // I remember you said something about that test, but didn't said what's wrong exactly.
-    // I suppose that's something is bad with injecting jdbcTemplate bean and using it
-    // If this test is bad, please explain how to implement such test in a better way.
     @DisplayName("Test genres cache auto-update after interval")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true)
     void testUpdateGenresCache() throws InterruptedException {
-        log.info("Sleep thread for 15 seconds to wait cache to be updated from DB");
-        Thread.sleep(15000);
+        log.info("Check that cache has been updated on start");
         assertEquals(5, cachedGenreDao.findAll().size());
 
         log.info("Update genres table, add new genre");
-        jdbcTemplate.update("INSERT INTO public.genres(id, name) VALUES(6, 'сериал')");
+        jdbcTemplate.update("INSERT INTO public.genres(name) VALUES('сериал')");
 
         log.info("Check that cache was not updated immediately");
         assertEquals(5, cachedGenreDao.findAll().size());
@@ -49,5 +41,12 @@ class CachedGenreDaoTest {
 
         log.info("Check updated cache after waiting for scheduled interval");
         assertEquals(6, cachedGenreDao.findAll().size());
+
+        //after
+        cleanUp();
+    }
+
+    private void cleanUp() {
+        jdbcTemplate.update("DELETE FROM public.genres WHERE name = 'сериал'");
     }
 }

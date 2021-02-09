@@ -2,6 +2,7 @@ package org.nomarch.movieland.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.entity.Movie;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
@@ -52,5 +53,31 @@ class QueryGeneratorTest {
         assertEquals("Изменное название", parameterSource.getValue("name_russian"));
         assertEquals(200.1, parameterSource.getValue("price"));
         assertEquals("newPoster.jpg", parameterSource.getValue("poster_img"));
+    }
+
+    @DisplayName("Test appendSortingOrder(String query) is SortingOrder is not initialized")
+    @Test
+    void testAppendIfSortingUtilNotConfigured() {
+
+        //when
+        String returnedQuery = QueryGenerator.appendSortingOrder("SELECT id, name FROM table", SortingOrder.NULL);
+
+        //then
+        assertNotNull(returnedQuery);
+        assertEquals("SELECT id, name FROM table", returnedQuery);
+    }
+
+    @DisplayName("Test appendSortingOrder(String query) method with configured SortingOrder")
+    @Test
+    void testAppendSortingOrder() {
+        //prepare
+        SortingOrder sortingOrder = SortingOrder.ASC;
+        sortingOrder.setParameterName("rating");
+
+        //when
+        String returnedQuery = QueryGenerator.appendSortingOrder("SELECT id, name FROM table", sortingOrder);
+
+        //then
+        assertEquals("SELECT id, name FROM table ORDER BY rating ASC", returnedQuery);
     }
 }

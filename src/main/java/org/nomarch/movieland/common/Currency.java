@@ -1,4 +1,4 @@
-package org.nomarch.movieland.common.currency;
+package org.nomarch.movieland.common;
 
 public enum Currency {
     USD("USD"),

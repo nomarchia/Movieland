@@ -11,8 +11,7 @@ import org.nomarch.movieland.RootApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.MovieDao;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.common.sorting.SortingOrder;
-import org.nomarch.movieland.dto.movie.MovieRequest;
+import org.nomarch.movieland.common.SortingOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -30,7 +29,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies from DB")
     @Test
-    @DataSet(value = "movies.xml", cleanBefore = true)
+    @DataSet(value = "movies.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindAll() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
@@ -53,7 +52,7 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = movieDao.findAll(new MovieRequest());
+        List<Movie> actualMovies = movieDao.findAll(SortingOrder.NULL);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -63,15 +62,14 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies order by rating Asc")
     @Test
-    @DataSet(value = "movies.xml", cleanBefore = true)
+    @DataSet(value = "movies.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindAllSortByRatingAsc() {
         //prepare
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setSortingFieldName("rating");
-        movieRequest.setSortingOrder(SortingOrder.ASC);
+        SortingOrder sortingOrder = SortingOrder.ASC;
+        sortingOrder.setParameterName("rating");
 
         //when
-        List<Movie> actualMovies = movieDao.findAll(movieRequest);
+        List<Movie> actualMovies = movieDao.findAll(sortingOrder);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -81,15 +79,14 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get all movies order by rating Desc")
     @Test
-    @DataSet(value = "movies.xml", cleanBefore = true)
+    @DataSet(value = "movies.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testGetAllMoviesSortByRatingDesc() {
         //prepare
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setSortingFieldName("rating");
-        movieRequest.setSortingOrder(SortingOrder.DESC);
+        SortingOrder sortingOrder = SortingOrder.DESC;
+        sortingOrder.setParameterName("rating");
 
         //when
-        List<Movie> actualMovies = movieDao.findAll(movieRequest);
+        List<Movie> actualMovies = movieDao.findAll(sortingOrder);
 
         //then
         assertEquals(5, actualMovies.size());
@@ -99,7 +96,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get three random movies from DB")
     @Test
-    @DataSet(value = "movies.xml", cleanBefore = true)
+    @DataSet(value = "movies.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindRandom() {
         //when
         List<Movie> actualMovies = movieDao.findRandom(3);
@@ -120,7 +117,8 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre from DB")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml",
+            cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     void testFindByGenre() {
         //prepare
         Movie expectedMovieFirst = Movie.builder()
@@ -152,7 +150,7 @@ class JdbcMovieDaoITest {
                 .build();
 
         //when
-        List<Movie> actualMovies = movieDao.findByGenre(5, new MovieRequest());
+        List<Movie> actualMovies = movieDao.findByGenre(5, SortingOrder.NULL);
 
         //then
         assertEquals(3, actualMovies.size());
@@ -163,14 +161,15 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Asc")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml",
+            cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     void testFindByGenreOrderByPriceAsc() {
         //prepare
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setSortingFieldName("price");
-        movieRequest.setSortingOrder(SortingOrder.ASC);
+        SortingOrder sortingOrder = SortingOrder.ASC;
+        sortingOrder.setParameterName("price");
+
         //when
-        List<Movie> actualMovies = movieDao.findByGenre(5, movieRequest);
+        List<Movie> actualMovies = movieDao.findByGenre(5, sortingOrder);
 
         //then
         assertEquals(3, actualMovies.size());
@@ -181,13 +180,14 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by genre order by price Desc")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml",
+            cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     void testFindByGenreOrderByPriceDesc() {
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setSortingFieldName("price");
-        movieRequest.setSortingOrder(SortingOrder.DESC);
+        SortingOrder sortingOrder = SortingOrder.DESC;
+        sortingOrder.setParameterName("price");
+
         //when
-        List<Movie> actualMovies = movieDao.findByGenre(5, movieRequest);
+        List<Movie> actualMovies = movieDao.findByGenre(5, sortingOrder);
 
         //then
         assertEquals(actualMovies.size(), 3);
@@ -198,10 +198,11 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Get movies by non-existing genre id")
     @Test
-    @DataSet(value = "movies_genres_and_movie_to_genre.xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_and_movie_to_genre.xml",
+            cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     public void testFindByGenreOutOfRange() {
         //when
-        List<Movie> actualMovies = movieDao.findByGenre(17, new MovieRequest());
+        List<Movie> actualMovies = movieDao.findByGenre(17, SortingOrder.NULL);
 
         //then
         assertEquals(0, actualMovies.size());
@@ -229,7 +230,8 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Add new movie to DB")
     @Test
-    @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml",
+            cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     @ExpectedDataSet(value = "tables_after_adding_new_movie.xml")
     @Order(1)
     void testAddNew() {
@@ -244,7 +246,7 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Update info of existing movie in DB without changed genres/countries")
     @Test
-    @DataSet(value = "movies.xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies.xml", cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     @ExpectedDataSet(value = "movies_after_movie_edited.xml")
     @Order(2)
     void testEditMovie() {
@@ -257,7 +259,8 @@ class JdbcMovieDaoITest {
 
     @DisplayName("Update info of existing movie in DB with changed genres/countries")
     @Test
-    @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml",
+            cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     @ExpectedDataSet(value = "tables_after_movie_has_been_edited.xml")
     @Order(3)
     void testEditMovieWithGenresAndCountries() {

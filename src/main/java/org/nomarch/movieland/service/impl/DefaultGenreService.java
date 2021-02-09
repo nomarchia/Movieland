@@ -15,15 +15,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DefaultGenreService implements GenreService {
-    private final GenreDao cachedGenreDao;
+    private final GenreDao genreDao;
 
     @Override
     public List<Genre> findAll() {
-        return cachedGenreDao.findAll();
+        return genreDao.findAll();
     }
 
     @Override
     public List<Genre> findByMovieId(Long movieId) {
-        return cachedGenreDao.findByMovieId(movieId);
+        return genreDao.findByMovieId(movieId);
     }
 }
