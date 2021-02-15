@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
-
 import org.nomarch.movieland.service.GenreService;
 import org.springframework.stereotype.Service;
 

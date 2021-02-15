@@ -9,8 +9,8 @@ import lombok.Setter;
 public class User {
     @Setter
     private Long id;
-    private String nickname;
-    private String email;
-    private String password;
-    private UserRole role;
+    private final String nickname;
+    private final String email;
+    private final String password;
+    private final UserRole role;
 }

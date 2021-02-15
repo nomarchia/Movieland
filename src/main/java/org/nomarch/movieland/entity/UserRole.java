@@ -4,7 +4,7 @@ public enum UserRole {
     USER(0),
     ADMIN(1);
 
-    private int roleNum;
+    private final int roleNum;
 
     UserRole(int roleNum) {
         this.roleNum = roleNum;
