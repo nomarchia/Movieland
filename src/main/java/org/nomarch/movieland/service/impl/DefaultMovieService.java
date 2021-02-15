@@ -1,14 +1,13 @@
 package org.nomarch.movieland.service.impl;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.nomarch.movieland.common.Currency;
-import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.dao.MovieDao;
-import org.nomarch.movieland.mapper.MovieDtoMapper;
-import org.nomarch.movieland.request.SaveMovieRequest;
 import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.mapper.MovieDtoMapper;
+import org.nomarch.movieland.request.GetMovieRequest;
+import org.nomarch.movieland.request.SaveMovieRequest;
 import org.nomarch.movieland.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,8 +28,8 @@ public class DefaultMovieService implements MovieService {
     private Integer moviesAmount;
 
     @Override
-    public List<Movie> findAll(@NonNull SortingOrder sortingOrder) {
-        return movieDao.findAll(sortingOrder);
+    public List<Movie> findAll(GetMovieRequest getMovieRequest) {
+        return movieDao.findAll(getMovieRequest);
     }
 
     @Override
@@ -39,8 +38,8 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<Movie> findByGenre(@NonNull Integer genreId, @NonNull SortingOrder sortingOrder) {
-        return movieDao.findByGenre(genreId, sortingOrder);
+    public List<Movie> findByGenre(Integer genreId, GetMovieRequest getMovieRequest) {
+        return movieDao.findByGenre(genreId, getMovieRequest);
     }
 
     @Override

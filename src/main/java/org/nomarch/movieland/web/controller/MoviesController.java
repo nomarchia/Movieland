@@ -1,34 +1,34 @@
 package org.nomarch.movieland.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.common.Currency;
 import org.nomarch.movieland.common.SortingOrder;
-import org.nomarch.movieland.request.SaveMovieRequest;
+import org.nomarch.movieland.common.SortingParameter;
 import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.entity.Movie;
-import org.nomarch.movieland.security.SecurityService;
+import org.nomarch.movieland.request.GetMovieRequest;
+import org.nomarch.movieland.request.SaveMovieRequest;
 import org.nomarch.movieland.service.MovieService;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping(value = "/movie")
 @RequiredArgsConstructor
 public class MoviesController {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MoviesController.class);
     private final MovieService movieService;
-    private final SecurityService securityService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                               @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
         log.debug("GET request by url \"/api/v1/movie\"");
-        SortingOrder sortingOrder = validateSortingParams(ratingOrder, priceOrder);
-        return movieService.findAll(sortingOrder);
+        GetMovieRequest movieRequest = createMovieRequest(ratingOrder, priceOrder);
+        return movieService.findAll(movieRequest);
     }
 
     @GetMapping(value = "/random", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,9 +43,9 @@ public class MoviesController {
                                   @RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                                   @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
         log.debug("GET request by url \"/api/v1/movie/genre/\"{}", genreId);
-        SortingOrder sortingOrder = validateSortingParams(ratingOrder, priceOrder);
+        GetMovieRequest movieRequest = createMovieRequest(ratingOrder, priceOrder);
 
-        return movieService.findByGenre(genreId, sortingOrder);
+        return movieService.findByGenre(genreId, movieRequest);
     }
 
     @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,21 +77,19 @@ public class MoviesController {
      * parameters have sorting values, no filter would be applied
      * and SortingOrder.NULL will be returned;
      */
-    private SortingOrder validateSortingParams(SortingOrder rating, SortingOrder price) {
+    private GetMovieRequest createMovieRequest(SortingOrder ratingOrder, SortingOrder priceOrder) {
         log.debug("Parsing sorting params");
-        if (rating != null && price != null) {
+        if (ratingOrder != null && priceOrder != null) {
             log.debug("Both sorting values are initiated. No filter will be applied as sorting order");
-            return SortingOrder.NULL;
+            return new GetMovieRequest();
         }
-        if (rating != null) {
-            rating.setParameterName("rating");
-            log.debug("Parsed movies order by rating " + rating.getOrder());
-            return rating;
-        } else if (price != null) {
-            price.setParameterName("price");
-            log.debug("Parsed movies order by price " + price.getOrder());
-            return price;
+        if (ratingOrder != null) {
+            log.debug("Parsed movies order by rating " + ratingOrder.getOrderDirection());
+            return GetMovieRequest.builder().sortingParameter(SortingParameter.RATING).sortingOrder(ratingOrder).build();
+        } else if (priceOrder != null) {
+            log.debug("Parsed movies order by price " + priceOrder.getOrderDirection());
+            return GetMovieRequest.builder().sortingParameter(SortingParameter.PRICE).sortingOrder(priceOrder).build();
         }
-        return SortingOrder.NULL;
+        return new GetMovieRequest();
     }
 }

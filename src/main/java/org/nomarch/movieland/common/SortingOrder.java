@@ -1,19 +1,15 @@
 package org.nomarch.movieland.common;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum SortingOrder {
     ASC("ASC"),
-    DESC("DESC"),
-    NULL("NULL");
+    DESC("DESC");
 
-    private String order;
-    @Setter
-    private String parameterName;
+    private final String orderDirection;
 
-    SortingOrder(String order) {
-        this.order = order;
+    SortingOrder(String orderDirection) {
+        this.orderDirection = orderDirection;
     }
 }

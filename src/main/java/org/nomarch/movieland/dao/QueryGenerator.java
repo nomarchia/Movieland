@@ -2,13 +2,12 @@ package org.nomarch.movieland.dao;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.request.GetMovieRequest;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 public class QueryGenerator {
@@ -53,9 +52,10 @@ public class QueryGenerator {
         return mapWithParams;
     }
 
-    public static String appendSortingOrder(@NonNull String query, @NonNull SortingOrder sortingOrder) {
-        if (sortingOrder != SortingOrder.NULL && Objects.nonNull(sortingOrder.getParameterName())) {
-            return query + " ORDER BY " + sortingOrder.getParameterName() + " " + sortingOrder.getOrder();
+    public static String appendSortingOrder(@NonNull String query, @NonNull GetMovieRequest getMovieRequest) {
+        if (getMovieRequest.getSortingOrder() != null && getMovieRequest.getSortingParameter() != null) {
+            return query + " ORDER BY " + getMovieRequest.getSortingParameter().getParamName() + " "
+                    + getMovieRequest.getSortingOrder().getOrderDirection();
         }
         log.debug("SortingUtil parameters are not configured. No sorting order has been applied");
         return query;
