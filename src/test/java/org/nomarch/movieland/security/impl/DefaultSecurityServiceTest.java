@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.nomarch.movieland.RootApplicationContext;
+import org.nomarch.movieland.MovielandApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dto.LoginInfo;
 import org.nomarch.movieland.entity.User;
@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DBRider
-@DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringJUnitWebConfig(value = {TestContext.class, MovielandApplicationContext.class})
 class DefaultSecurityServiceTest {
     @Autowired
     SecurityService securityService;

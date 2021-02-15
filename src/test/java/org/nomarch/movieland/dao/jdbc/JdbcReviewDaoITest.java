@@ -8,7 +8,7 @@ import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.nomarch.movieland.RootApplicationContext;
+import org.nomarch.movieland.MovielandApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.ReviewDao;
 import org.nomarch.movieland.entity.Review;
@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 @DBRider()
-@DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringJUnitWebConfig(value = {TestContext.class, MovielandApplicationContext.class})
 class JdbcReviewDaoITest {
     @Autowired
     private ReviewDao reviewDao;

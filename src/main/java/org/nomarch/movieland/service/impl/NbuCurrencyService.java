@@ -30,35 +30,34 @@ public class NbuCurrencyService implements CurrencyService {
     @Setter
     @Value("${nbu.rates.json.url}")
     private String nbuJsonUrl;
-    private List<JsonNode> currencyNodes;
 
-    private Map<Currency, Double> requiredRates;
+    private Map<String, Double> currencyRates;
 
     @Override
     public double getCurrencyRate(Currency currency) {
-        if (requiredRates == null) {
-            enrichRequiredRatesMap();
-        }
-        return requiredRates.get(currency);
-    }
-
-
-    private void enrichRequiredRatesMap() {
-        if (currencyNodes == null) {
+        if (currencyRates == null) {
             parseCurrency();
         }
-
-        requiredRates = new HashMap<>();
-        Double usdRate = currencyNodes.get(usdJsonIndex).get("rate").asDouble();
-        requiredRates.put(Currency.USD, usdRate);
-        Double eurRate = currencyNodes.get(eurJsonIndex).get("rate").asDouble();
-        requiredRates.put(Currency.EUR, eurRate);
-
-        log.debug("Returning currency rates hashmap: {}", requiredRates);
+        return currencyRates.get(currency.getCurrencyCode());
     }
 
     @Scheduled(fixedRateString = "${nbu.rates.renew.interval}")
     private void parseCurrency() {
+        currencyRates = enrichAllCurrenciesToMap();
+    }
+
+    private Map<String, Double> enrichAllCurrenciesToMap() {
+        List<JsonNode> currencyNodes = getAllCurrenciesFromNbu();
+        Map<String, Double> rates = new HashMap<>();
+
+        for (JsonNode currencyNode : currencyNodes) {
+            rates.put(currencyNode.get("cc").asText(), currencyNode.get("rate").asDouble());
+        }
+
+        return rates;
+    }
+
+    private List<JsonNode> getAllCurrenciesFromNbu() {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -67,7 +66,7 @@ public class NbuCurrencyService implements CurrencyService {
             JsonNode node = mapper.readTree(url);
 
             ObjectReader reader = mapper.readerForListOf(JsonNode.class);
-            currencyNodes = reader.readValue(node);
+            return reader.readValue(node);
         } catch (IOException e) {
             log.debug("Error happened while parsing currency rates from the url: {}", nbuJsonUrl);
             throw new RuntimeException("IO error happened while trying to parse currency rates");

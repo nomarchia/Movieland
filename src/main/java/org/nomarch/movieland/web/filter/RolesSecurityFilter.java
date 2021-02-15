@@ -11,7 +11,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 
 @WebFilter(filterName = "rolesSecurityFilter", urlPatterns = "/*")
@@ -19,7 +18,7 @@ public class RolesSecurityFilter implements Filter {
     private SecurityService securityService;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         ServletContext servletContext = filterConfig.getServletContext();
         securityService = WebApplicationContextUtils.findWebApplicationContext(servletContext)
                 .getBean(SecurityService.class);
@@ -52,9 +51,9 @@ public class RolesSecurityFilter implements Filter {
                     chain.doFilter(request, response);
                 }
             }
+        } else {
+            throw new InsufficientAccessRightsException("Request sender don't have access rights to access url " + method.toString() + " " + requestURI);
         }
-
-        throw new InsufficientAccessRightsException("Request sender don't have access rights to access url " + method.toString() + " " + requestURI);
     }
 
     @Override

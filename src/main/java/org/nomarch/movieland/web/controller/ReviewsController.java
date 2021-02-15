@@ -21,16 +21,16 @@ public class ReviewsController {
     private final ReviewDtoMapper mapper;
 
     @PostMapping(value = "review")
-    @ResponseStatus(HttpStatus.OK)
-    public void addReview(@RequestHeader String uuid, @RequestBody ReviewRequest reviewRequest) {
-        log.debug("POST request by url \"/api/v1/review\" for user with token: {}", uuid);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addReview(@RequestBody ReviewRequest reviewRequest) {
+        log.debug("POST request by url /review to add new review");
 
         Review newReview = mapper.dtoToReview(reviewRequest);
 
         User user = UserHolder.getUser();
         newReview.setUser(user);
 
-        log.debug("Saving new review: {}", newReview);
+        log.debug("Saving new review: {}, added by user: {}", newReview, user);
         reviewService.save(newReview);
     }
 }
