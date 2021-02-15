@@ -7,7 +7,7 @@ import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.nomarch.movieland.RootApplicationContext;
+import org.nomarch.movieland.MovielandApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.CountryDao;
 import org.nomarch.movieland.entity.Country;
@@ -19,8 +19,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DBRider
-@DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringJUnitWebConfig(value = {TestContext.class, MovielandApplicationContext.class})
 class JdbcCountryDaoITest {
     @Autowired
     private CountryDao countryDao;

@@ -6,6 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class LoginInfo {
-    private String uuid;
-    private String nickname;
+    private final String uuid;
+    private final String nickname;
 }

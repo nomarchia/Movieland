@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder
 @Getter
 public class Session {
-    private User user;
-    private UUID uuidToken;
-    private LocalDateTime expiryTime;
+    private final User user;
+    private final UUID uuidToken;
+    private final LocalDateTime expiryTime;
 }

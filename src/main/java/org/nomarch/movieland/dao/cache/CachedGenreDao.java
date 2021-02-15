@@ -3,7 +3,6 @@ package org.nomarch.movieland.dao.cache;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -16,8 +15,7 @@ import java.util.List;
 @Repository
 @Primary
 public class CachedGenreDao implements GenreDao {
-    @Autowired
-    private GenreDao genreDao;
+    private final GenreDao genreDao;
     private volatile List<Genre> genresCache;
 
     public CachedGenreDao(GenreDao genreDao) {

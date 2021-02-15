@@ -1,17 +1,17 @@
 package org.nomarch.movieland.dao;
 
-import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.request.GetMovieRequest;
 
 import java.util.List;
 
 public interface MovieDao {
 
-    List<Movie> findAll(SortingOrder sortingOrder);
+    List<Movie> findAll(GetMovieRequest getMovieRequest);
 
     List<Movie> findRandom(Integer moviesAmount);
 
-    List<Movie> findByGenre(Integer genreId, SortingOrder sortingOrder);
+    List<Movie> findByGenre(Integer genreId, GetMovieRequest getMovieRequest);
 
     Movie findById(Long movieId);
 

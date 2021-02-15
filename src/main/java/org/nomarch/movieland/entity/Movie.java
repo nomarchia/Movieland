@@ -1,14 +1,16 @@
 package org.nomarch.movieland.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
 @Builder
-@Setter
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Movie {
     private Long id;
     private String nameNative;
@@ -18,7 +20,7 @@ public class Movie {
     private Double rating;
     private Double price;
     private String picturePath;
-    private int[] genres;
-    private int[] countries;
-    private int[] reviews;
+    private List<Genre> genres;
+    private List<Country> countries;
+    private List<Review> reviews;
 }

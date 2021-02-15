@@ -3,7 +3,9 @@ package org.nomarch.movieland.dao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nomarch.movieland.common.SortingOrder;
+import org.nomarch.movieland.common.SortingParameter;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.request.GetMovieRequest;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import java.util.Map;
@@ -60,7 +62,7 @@ class QueryGeneratorTest {
     void testAppendIfSortingUtilNotConfigured() {
 
         //when
-        String returnedQuery = QueryGenerator.appendSortingOrder("SELECT id, name FROM table", SortingOrder.NULL);
+        String returnedQuery = QueryGenerator.appendSortingOrder("SELECT id, name FROM table", new GetMovieRequest());
 
         //then
         assertNotNull(returnedQuery);
@@ -71,11 +73,11 @@ class QueryGeneratorTest {
     @Test
     void testAppendSortingOrder() {
         //prepare
-        SortingOrder sortingOrder = SortingOrder.ASC;
-        sortingOrder.setParameterName("rating");
+        GetMovieRequest movieRequest = GetMovieRequest.builder().sortingParameter(SortingParameter.RATING)
+                .sortingOrder(SortingOrder.ASC).build();
 
         //when
-        String returnedQuery = QueryGenerator.appendSortingOrder("SELECT id, name FROM table", sortingOrder);
+        String returnedQuery = QueryGenerator.appendSortingOrder("SELECT id, name FROM table", movieRequest);
 
         //then
         assertEquals("SELECT id, name FROM table ORDER BY rating ASC", returnedQuery);

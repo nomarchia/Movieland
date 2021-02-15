@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.nomarch.movieland.RootApplicationContext;
+import org.nomarch.movieland.MovielandApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.dao.GenreDao;
 import org.nomarch.movieland.entity.Genre;
@@ -20,8 +20,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DBRider
-@DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringJUnitWebConfig(value = {TestContext.class, MovielandApplicationContext.class})
 class JdbcGenreDaoITest {
     @Autowired
     private GenreDao jdbcGenreDao;
@@ -30,8 +30,8 @@ class JdbcGenreDaoITest {
     @Test
     void testGetAll() {
         //prepare
-        Genre expectedFirst = Genre.builder().id(1).name("драма").build();
-        Genre expectedFifth = Genre.builder().id(5).name("мелодрама").build();
+        Genre expectedFirst = Genre.builder().id(1L).name("драма").build();
+        Genre expectedFifth = Genre.builder().id(5L).name("мелодрама").build();
 
         //when
         List<Genre> actualGenres = jdbcGenreDao.findAll();
@@ -47,7 +47,7 @@ class JdbcGenreDaoITest {
     @DataSet(value = "movies_genres_countries_and_many_to_many_tables.xml", skipCleaningFor = {"genres"})
     void testGetGenresByMovieId() {
         //prepare
-        Genre expected = Genre.builder().id(5).name("мелодрама").build();
+        Genre expected = Genre.builder().id(5L).name("мелодрама").build();
 
         //when
         List<Genre> actualGenres = jdbcGenreDao.findByMovieId(5L);

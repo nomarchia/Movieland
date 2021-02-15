@@ -8,7 +8,6 @@ import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.exception.IncorrectCredentialsException;
 import org.nomarch.movieland.security.SecurityService;
 import org.nomarch.movieland.security.session.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,11 +22,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class DefaultSecurityService implements SecurityService {
-    @Autowired
     private final UserDao userDao;
+    private final Map<String, Session> uuidSessionCacheMap = new HashMap<>();
     @Value("${uuid.lifetime.in.seconds}")
     private int uuidLifeTimeInSeconds;
-    private final Map<String, Session> uuidSessionCacheMap = new HashMap<>();
 
     @Override
     public LoginInfo login(@NonNull String email, @NonNull String password) {

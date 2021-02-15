@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -16,7 +15,7 @@ import javax.sql.DataSource;
 @PropertySource("classpath:application.properties")
 @ComponentScan("org.nomarch.movieland")
 @EnableScheduling
-public class RootApplicationContext {
+public class MovielandApplicationContext {
     @Bean
     protected DataSource dataSource(@Value("${jdbc.user}") String user, @Value("${jdbc.password}") String password,
                                     @Value("${jdbc.url}") String url, @Value("${jdbc.driver}") String driver) {
@@ -27,11 +26,6 @@ public class RootApplicationContext {
         hikariDataSource.setDriverClassName(driver);
 
         return hikariDataSource;
-    }
-
-    @Bean
-    protected JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
     }
 
     @Bean

@@ -1,12 +1,10 @@
 package org.nomarch.movieland.entity;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Builder
 @Getter
 public class Genre {
-    private int id;
+    private Long id;
     private String name;
 }

@@ -6,7 +6,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.nomarch.movieland.RootApplicationContext;
+import org.nomarch.movieland.MovielandApplicationContext;
 import org.nomarch.movieland.TestContext;
 import org.nomarch.movieland.common.Currency;
 import org.nomarch.movieland.dto.FullMovieDto;
@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @DBRider
-@DBUnit(caseSensitiveTableNames = false, caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringJUnitWebConfig(value = {TestContext.class, RootApplicationContext.class})
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringJUnitWebConfig(value = {TestContext.class, MovielandApplicationContext.class})
 class DefaultMovieServiceITest {
     @Autowired
     private MovieService movieService;

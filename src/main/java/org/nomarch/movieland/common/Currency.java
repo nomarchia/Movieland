@@ -1,19 +1,22 @@
 package org.nomarch.movieland.common;
 
+import lombok.Getter;
+
 public enum Currency {
     USD("USD"),
     EUR("EUR"),
     UAH("UAH");
 
-    private String currencyName;
+    @Getter
+    private final String currencyCode;
 
-    Currency(String currencyName) {
-        this.currencyName = currencyName;
+    Currency(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     public static Currency getByName(String currencyName) {
         for (Currency currency : values()) {
-            if (currency.currencyName.equals(currencyName)) {
+            if (currency.currencyCode.equals(currencyName)) {
                 return currency;
             }
         }

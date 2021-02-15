@@ -39,9 +39,9 @@ class GenresControllerTest {
     void testGetAll() throws Exception {
         //prepare
         List<Genre> expectedGenres = new ArrayList<>();
-        expectedGenres.add(Genre.builder().id(1).name("драма").build());
-        expectedGenres.add(Genre.builder().id(2).name("криминал").build());
-        expectedGenres.add(Genre.builder().id(3).name("фэнтези").build());
+        expectedGenres.add(Genre.builder().id(1L).name("драма").build());
+        expectedGenres.add(Genre.builder().id(2L).name("криминал").build());
+        expectedGenres.add(Genre.builder().id(3L).name("фэнтези").build());
 
         when(genreService.findAll())
                 .thenReturn(expectedGenres);

@@ -4,8 +4,8 @@ import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.request.GetMovieRequest;
 import org.nomarch.movieland.service.MovieService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -14,10 +14,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @TestInstance(PER_METHOD)
 class MoviesControllerTest {
@@ -40,7 +40,7 @@ class MoviesControllerTest {
     @Test
     void testGetAll() throws Exception {
         //prepare
-        when(movieService.findAll(any(SortingOrder.class))).thenReturn(expectedMovies);
+        when(movieService.findAll(any(GetMovieRequest.class))).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie"))
@@ -77,9 +77,7 @@ class MoviesControllerTest {
     @Test
     void testGetAllWithPriceSortingParam() throws Exception {
         //prepare
-        SortingOrder priceOrder = SortingOrder.DESC;
-        priceOrder.setParameterName("price");
-        when(movieService.findAll(priceOrder)).thenReturn(expectedMovies);
+        when(movieService.findAll(any(GetMovieRequest.class))).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie?price=DESC"))
@@ -153,13 +151,13 @@ class MoviesControllerTest {
     @Test
     void testGetMoviesByGenre() throws Exception {
         //prepare
-        when(movieService.findByGenre(1, SortingOrder.NULL)).thenReturn(expectedMovies);
+        when(movieService.findByGenre(eq(1), any(GetMovieRequest.class))).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie/genre/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-//                .andExpect(jsonPath("$.size()").value(3))
+                .andExpect(jsonPath("$.size()").value(3))
 
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nameNative").value("The Shawshank Redemption"))
@@ -190,10 +188,7 @@ class MoviesControllerTest {
     @Test
     void testGetMoviesByGenreWithRatingSortingParam() throws Exception {
         //prepare
-        SortingOrder ratingOrder = SortingOrder.ASC;
-        ratingOrder.setParameterName("rating");
-
-        when(movieService.findByGenre(1, ratingOrder)).thenReturn(expectedMovies);
+        when(movieService.findByGenre(eq(1), any(GetMovieRequest.class))).thenReturn(expectedMovies);
 
         //when
         mockMvc.perform(get("/movie/genre/1?rating=ASC"))
@@ -225,29 +220,6 @@ class MoviesControllerTest {
                 .andExpect(jsonPath("$[2].price").value(200.60))
                 .andExpect(jsonPath("$[2].picturePath").value("https://site.com/img3.jpg"));
     }
-
-//    @DisplayName("Get Movie by id by get(/api/v1/movie/1?currency=USD) request")
-//    @Test
-//    void testGetById() throws Exception {
-//        //prepare
-//        Movie movie = Movie.builder().id(1L).nameNative("The Shawshank Redemption").nameRussian("Побег из Шоушенка")
-//                .yearOfRelease(1994).description("a").rating(8.9).price(123.45).picturePath("https://site.com/img1.jpg").build();
-//
-//        when(movieService.findById(1, Currency.USD)).thenReturn(movie);
-//
-//        //when
-//        mockMvc.perform(get("/movie/1?currency=USD"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType("application/json"))
-//                .andExpect(jsonPath("$.id").value(1))
-//                .andExpect(jsonPath("$.nameNative").value("The Shawshank Redemption"))
-//                .andExpect(jsonPath("$.nameRussian").value("Побег из Шоушенка"))
-//                .andExpect(jsonPath("$.year").value(1994))
-//                .andExpect(jsonPath("$.description").value("a"))
-//                .andExpect(jsonPath("$.rating").value(8.9))
-//                .andExpect(jsonPath("$.price").value(123.45))
-//                .andExpect(jsonPath("$.posterImg").value("https://site.com/img1.jpg"));
-//    }
 
     private List<Movie> createExpectedMovies() {
         expectedMovies = new ArrayList<>();
