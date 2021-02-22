@@ -1,7 +1,8 @@
 package org.nomarch.movieland.service;
 
-import org.nomarch.movieland.common.Currency;
+import org.nomarch.movieland.common.CurrencyCode;
 
 public interface CurrencyService {
-    double getCurrencyRate(Currency currency);
+
+    double convert(CurrencyCode from, CurrencyCode to, Double amount);
 }

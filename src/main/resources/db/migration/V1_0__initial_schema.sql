@@ -3,7 +3,7 @@ CREATE TABLE movies (
     name_native VARCHAR(200) NOT NULL,
     name_russian VARCHAR(200) NOT NULL,
     year BIGINT NOT NULL,
-    description TEXT NOT NULL,
+    description TEXT,
     rating DOUBLE PRECISION,
     price DOUBLE PRECISION  NOT NULL,
     poster_img VARCHAR

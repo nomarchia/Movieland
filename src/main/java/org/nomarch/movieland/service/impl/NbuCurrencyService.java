@@ -1,75 +1,64 @@
 package org.nomarch.movieland.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.common.Currency;
+import org.nomarch.movieland.common.CurrencyCode;
 import org.nomarch.movieland.service.CurrencyService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NbuCurrencyService implements CurrencyService {
-    @Value("${usd.json.index}")
-    private int usdJsonIndex;
-    @Value("${eur.json.index:33}")
-    private int eurJsonIndex;
     /* Setter added for tests */
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     @Value("${nbu.rates.json.url}")
     private String nbuJsonUrl;
 
     private Map<String, Double> currencyRates;
 
     @Override
-    public double getCurrencyRate(Currency currency) {
+    public double convert(CurrencyCode from, CurrencyCode to, Double amount) {
         if (currencyRates == null) {
-            parseCurrency();
+            updateCurrencyRates();
         }
-        return currencyRates.get(currency.getCurrencyCode());
+
+        if (from == CurrencyCode.UAH) {
+            return amount / currencyRates.get(to.getCurrencyCode());
+        }
+
+        return currencyRates.get(from.getCurrencyCode()) / currencyRates.get(to.getCurrencyCode()) * amount;
     }
 
-    @Scheduled(fixedRateString = "${nbu.rates.renew.interval}")
-    private void parseCurrency() {
-        currencyRates = enrichAllCurrenciesToMap();
+
+    @Scheduled(cron = "${nbu.rates.renew.time.cron}")
+    private void updateCurrencyRates() {
+        currencyRates = enrichCurrencyRatesMap();
     }
 
-    private Map<String, Double> enrichAllCurrenciesToMap() {
-        List<JsonNode> currencyNodes = getAllCurrenciesFromNbu();
+    private Map<String, Double> enrichCurrencyRatesMap() {
+        List<Currency> currencies = getAllCurrenciesFromNbu();
         Map<String, Double> rates = new HashMap<>();
 
-        for (JsonNode currencyNode : currencyNodes) {
-            rates.put(currencyNode.get("cc").asText(), currencyNode.get("rate").asDouble());
+        for (Currency currency : currencies) {
+            rates.put(currency.getCc(), currency.getRate());
         }
 
         return rates;
     }
 
-    private List<JsonNode> getAllCurrenciesFromNbu() {
-        ObjectMapper mapper = new ObjectMapper();
+    private List<Currency> getAllCurrenciesFromNbu() {
+        RestTemplate restTemplate = new RestTemplate();
 
-        try {
-            log.debug("Parsing currency rates from NBU site by url: {}", nbuJsonUrl);
-            URL url = new URL(nbuJsonUrl);
-            JsonNode node = mapper.readTree(url);
-
-            ObjectReader reader = mapper.readerForListOf(JsonNode.class);
-            return reader.readValue(node);
-        } catch (IOException e) {
-            log.debug("Error happened while parsing currency rates from the url: {}", nbuJsonUrl);
-            throw new RuntimeException("IO error happened while trying to parse currency rates");
-        }
+        Currency[] currencies = restTemplate.getForObject(nbuJsonUrl, Currency[].class);
+        return Arrays.asList(currencies);
     }
 }

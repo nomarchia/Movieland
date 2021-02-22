@@ -17,8 +17,7 @@ public class CountriesController {
     private final CountryService countryService;
 
     @GetMapping(value = "/country", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<Country> getAllCountries() {
-        log.debug("GET request by url \"/api/v1/country\"");
+    List<Country> findAll() {
         return countryService.findAll();
     }
 }
