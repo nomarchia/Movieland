@@ -3,7 +3,6 @@ package org.nomarch.movieland.dao.jdbc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dao.MovieDao;
-import org.nomarch.movieland.dao.QueryGenerator;
 import org.nomarch.movieland.dao.jdbc.mapper.FullMovieRowMapper;
 import org.nomarch.movieland.dao.jdbc.mapper.MovieRowMapper;
 import org.nomarch.movieland.entity.Country;
@@ -35,6 +34,8 @@ public class JdbcMovieDao implements MovieDao {
             "FROM movies where id = :movie_id";
     private static final String ADD_NEW = "INSERT INTO movies (name_native, name_russian, year, description, price, poster_img) " +
             "VALUES (:name_native, :name_russian, :year, :description, :price, :poster_img)";
+    private static final String UPDATE = "UPDATE movies SET name_native = :name_native, name_russian = :name_russian, " +
+            "year = :year, description = :description, price = :price, poster_img = :poster_img WHERE id = :id";
     private static final String ADD_MOVIE_GENRES = "INSERT INTO movie_to_genre (movie_id, genre_id) VALUES (:movie_id, :genre_id)";
     private static final String ADD_MOVIE_COUNTRIES = "INSERT INTO movie_to_country (movie_id, country_id) VALUES (:movie_id, :country_id)";
     private static final String CLEAR_MOVIE_GENRES = "DELETE FROM movie_to_genre WHERE movie_id = :movie_id";
@@ -76,13 +77,7 @@ public class JdbcMovieDao implements MovieDao {
     public void add(Movie newMovie) {
         log.debug("Saving new movie ({}) to DB", newMovie);
 
-        MapSqlParameterSource map = new MapSqlParameterSource();
-        map.addValue("name_native", newMovie.getNameNative());
-        map.addValue("name_russian", newMovie.getNameRussian());
-        map.addValue("year", newMovie.getYearOfRelease());
-        map.addValue("description", newMovie.getDescription());
-        map.addValue("price", newMovie.getPrice());
-        map.addValue("poster_img", newMovie.getPicturePath());
+        MapSqlParameterSource map = getMapSqlParameterSource(newMovie);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -103,10 +98,10 @@ public class JdbcMovieDao implements MovieDao {
     public void edit(Movie updatedMovie) {
         log.debug("Updating a movie by id {} with new values: {}", updatedMovie.getId(), updatedMovie);
 
-        Map<String, Object> mapWithPreparedQueryAndParams = QueryGenerator.formMovieUpdateQuery(updatedMovie);
-        String updateQuery = (String) mapWithPreparedQueryAndParams.get("query");
-        MapSqlParameterSource parameterSource = (MapSqlParameterSource) mapWithPreparedQueryAndParams.get("parameterSource");
-        namedParameterJdbcTemplate.update(updateQuery, parameterSource);
+        MapSqlParameterSource parameterSource = getMapSqlParameterSource(updatedMovie);
+        parameterSource.addValue("id", updatedMovie.getId());
+
+        namedParameterJdbcTemplate.update(UPDATE, parameterSource);
 
         if (updatedMovie.getGenres() != null) {
             clearOldValues(CLEAR_MOVIE_GENRES, updatedMovie.getId());
@@ -121,6 +116,17 @@ public class JdbcMovieDao implements MovieDao {
             List<Long> countryIds = getIdList(updatedMovie.getCountries(), Country.class);
             updateDependantManyToManyTable(ADD_MOVIE_COUNTRIES, updatedMovie.getId(), countryIds);
         }
+    }
+
+    private MapSqlParameterSource getMapSqlParameterSource(Movie newMovie) {
+        MapSqlParameterSource map = new MapSqlParameterSource();
+        map.addValue("name_native", newMovie.getNameNative());
+        map.addValue("name_russian", newMovie.getNameRussian());
+        map.addValue("year", newMovie.getYearOfRelease());
+        map.addValue("description", newMovie.getDescription());
+        map.addValue("price", newMovie.getPrice());
+        map.addValue("poster_img", newMovie.getPicturePath());
+        return map;
     }
 
     private List<Long> getIdList(List<?> values, Class<?> clazz) {
@@ -144,6 +150,11 @@ public class JdbcMovieDao implements MovieDao {
         throw new IllegalArgumentException("Provided list of values or Class was null or incorrect");
     }
 
+    private void clearOldValues(String deleteQuery, Long movieId) {
+        log.debug("Clearing old values for movie with id {}, using ({}) query", movieId, deleteQuery);
+        namedParameterJdbcTemplate.update(deleteQuery, new MapSqlParameterSource("movie_id", movieId));
+    }
+
     private void updateDependantManyToManyTable(String insertQuery, Long movieId, List<Long> valueIds) {
         log.debug("Inserting into dependant table by ids {} for movie with id {}, using query ({})", valueIds, movieId, insertQuery);
         for (Long valueId : valueIds) {
@@ -158,10 +169,5 @@ public class JdbcMovieDao implements MovieDao {
 
             namedParameterJdbcTemplate.update(insertQuery, parameterSource);
         }
-    }
-
-    private void clearOldValues(String deleteQuery, Long movieId) {
-        log.debug("Clearing old values for movie with id {}, using ({}) query", movieId, deleteQuery);
-        namedParameterJdbcTemplate.update(deleteQuery, new MapSqlParameterSource("movie_id", movieId));
     }
 }

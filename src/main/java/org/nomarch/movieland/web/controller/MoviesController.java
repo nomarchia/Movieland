@@ -1,40 +1,39 @@
 package org.nomarch.movieland.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.nomarch.movieland.common.Currency;
+import lombok.extern.slf4j.Slf4j;
+import org.nomarch.movieland.common.CurrencyCode;
 import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.common.SortingParameter;
 import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.mapper.MovieDtoMapper;
 import org.nomarch.movieland.request.GetMovieRequest;
 import org.nomarch.movieland.request.SaveMovieRequest;
 import org.nomarch.movieland.service.MovieService;
-import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/movie")
 @RequiredArgsConstructor
 public class MoviesController {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MoviesController.class);
     private final MovieService movieService;
+    private final MovieDtoMapper movieDtoMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                               @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
-        log.debug("GET request by url \"/api/v1/movie\"");
         GetMovieRequest movieRequest = createMovieRequest(ratingOrder, priceOrder);
         return movieService.findAll(movieRequest);
     }
 
     @GetMapping(value = "/random", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Movie> getRandom() {
-        log.debug("GET request by url \"/api/v1/movie/random\"\"");
-
         return movieService.findRandom();
     }
 
@@ -42,29 +41,29 @@ public class MoviesController {
     public List<Movie> getByGenre(@PathVariable Integer genreId,
                                   @RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                                   @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
-        log.debug("GET request by url \"/api/v1/movie/genre/\"{}", genreId);
+        log.debug("GET movies by genre id: {}", genreId);
         GetMovieRequest movieRequest = createMovieRequest(ratingOrder, priceOrder);
 
         return movieService.findByGenre(genreId, movieRequest);
     }
 
     @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FullMovieDto getById(@PathVariable Long movieId, @RequestParam(required = false) Currency currency) {
-        log.debug("GET request by url \"/api/v1/movie/\"{}", movieId);
-        return movieService.findById(movieId, currency);
+    public FullMovieDto getById(@PathVariable Long movieId, @RequestParam(required = false) CurrencyCode currencyCode) {
+        return movieService.findById(movieId, currencyCode);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void add(@RequestBody SaveMovieRequest newMovie) {
-        log.debug("POST request by url \"/api/v1/movie/\"");
         movieService.add(newMovie);
     }
 
     @PutMapping(value = "/{movieId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void edit(@PathVariable Long movieId, @RequestBody SaveMovieRequest updatedMovie) {
-        movieService.edit(movieId, updatedMovie);
+        Movie movie = movieDtoMapper.dtoToMovie(updatedMovie);
+        movie.setId(movieId);
+        movieService.edit(movie);
     }
 
 
