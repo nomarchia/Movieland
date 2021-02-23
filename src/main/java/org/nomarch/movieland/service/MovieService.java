@@ -1,10 +1,9 @@
 package org.nomarch.movieland.service;
 
-import org.nomarch.movieland.common.Currency;
+import org.nomarch.movieland.common.CurrencyCode;
 import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.request.GetMovieRequest;
-import org.nomarch.movieland.request.SaveMovieRequest;
 
 import java.util.List;
 
@@ -15,9 +14,9 @@ public interface MovieService {
 
     List<Movie> findByGenre(Integer genreId, GetMovieRequest getMovieRequest);
 
-    FullMovieDto findById(Long movieId, Currency currency);
+    FullMovieDto findById(Long movieId, CurrencyCode currencyCode);
 
-    void add(SaveMovieRequest newMovie);
+    void add(Movie newMovie);
 
-    void edit(Long movieId, SaveMovieRequest movie);
+    void edit(Movie updatedMovie);
 }
