@@ -7,10 +7,12 @@ import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.common.SortingParameter;
 import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.entity.Movie;
+import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.mapper.MovieDtoMapper;
 import org.nomarch.movieland.request.GetMovieRequest;
 import org.nomarch.movieland.request.SaveMovieRequest;
 import org.nomarch.movieland.service.MovieService;
+import org.nomarch.movieland.web.Secured;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class MoviesController {
     private final MovieService movieService;
     private final MovieDtoMapper movieDtoMapper;
 
+    @Secured(UserRole.GUEST)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
                               @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
@@ -32,11 +35,13 @@ public class MoviesController {
         return movieService.findAll(movieRequest);
     }
 
+    @Secured(UserRole.GUEST)
     @GetMapping(value = "/random", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Movie> getRandom() {
         return movieService.findRandom();
     }
 
+    @Secured(UserRole.GUEST)
     @GetMapping(value = "/genre/{genreId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Movie> getByGenre(@PathVariable Integer genreId,
                                   @RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
@@ -48,18 +53,21 @@ public class MoviesController {
     }
 
     @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured(UserRole.GUEST)
     public FullMovieDto getById(@PathVariable Long movieId, @RequestParam(required = false) CurrencyCode currencyCode) {
         return movieService.findById(movieId, currencyCode);
     }
 
+    @Secured(UserRole.ADMIN)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void add(@RequestBody SaveMovieRequest newMovie) {
         movieService.add(newMovie);
     }
 
+    @Secured(UserRole.ADMIN)
     @PutMapping(value = "/{movieId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void edit(@PathVariable Long movieId, @RequestBody SaveMovieRequest updatedMovie) {
         Movie movie = movieDtoMapper.dtoToMovie(updatedMovie);
         movie.setId(movieId);

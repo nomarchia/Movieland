@@ -1,9 +1,14 @@
 package org.nomarch.movieland.entity;
 
-public enum UserRole {
-    USER(0),
-    ADMIN(1);
 
+import lombok.Getter;
+
+public enum UserRole {
+    GUEST(0),
+    USER(1),
+    ADMIN(2);
+
+    @Getter
     private final int roleNum;
 
     UserRole(int roleNum) {
