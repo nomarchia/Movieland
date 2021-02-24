@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dto.LoginInfo;
 import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.security.SecurityService;
-import org.nomarch.movieland.web.Secured;
+import org.nomarch.movieland.web.interceptor.Secured;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 

@@ -4,7 +4,9 @@ import lombok.*;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Country {
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
 }
