@@ -1,4 +1,4 @@
-package org.nomarch.movieland.web;
+package org.nomarch.movieland.web.interceptor;
 
 import org.nomarch.movieland.entity.UserRole;
 

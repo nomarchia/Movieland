@@ -9,7 +9,7 @@ import org.nomarch.movieland.entity.Review;
 import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.security.UserHolder;
 import org.nomarch.movieland.service.ReviewService;
-import org.nomarch.movieland.web.Secured;
+import org.nomarch.movieland.web.interceptor.Secured;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

@@ -12,7 +12,7 @@ import org.nomarch.movieland.mapper.MovieDtoMapper;
 import org.nomarch.movieland.request.GetMovieRequest;
 import org.nomarch.movieland.request.SaveMovieRequest;
 import org.nomarch.movieland.service.MovieService;
-import org.nomarch.movieland.web.Secured;
+import org.nomarch.movieland.web.interceptor.Secured;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -52,9 +52,9 @@ public class MoviesController {
         return movieService.findByGenre(genreId, movieRequest);
     }
 
-    @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Secured(UserRole.GUEST)
-    public FullMovieDto getById(@PathVariable Long movieId, @RequestParam(required = false) CurrencyCode currencyCode) {
+    @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FullMovieDto getById(@PathVariable Long movieId, @RequestParam(required = false, name = "currency") CurrencyCode currencyCode) {
         return movieService.findById(movieId, currencyCode);
     }
 
@@ -76,16 +76,6 @@ public class MoviesController {
         movieService.edit(movie);
     }
 
-
-    /**
-     * Method assumes that only one parameter received from controller will
-     * be initiated with value and the other one will be NULL.
-     *
-     * @return SortingOrder object with parsed and initiated parameter fields.
-     * If both received parameters have NULL values or both rating and price
-     * parameters have sorting values, no filter would be applied
-     * and SortingOrder.NULL will be returned;
-     */
     private GetMovieRequest createMovieRequest(SortingOrder ratingOrder, SortingOrder priceOrder) {
         log.debug("Parsing sorting params");
         if (ratingOrder != null && priceOrder != null) {

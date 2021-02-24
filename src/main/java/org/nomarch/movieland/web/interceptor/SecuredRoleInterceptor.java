@@ -4,7 +4,6 @@ import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.exception.InsufficientAccessRightsException;
 import org.nomarch.movieland.security.UserHolder;
-import org.nomarch.movieland.web.Secured;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 

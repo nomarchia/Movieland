@@ -4,7 +4,9 @@ import lombok.*;
 
 @Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Genre {
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
 }
