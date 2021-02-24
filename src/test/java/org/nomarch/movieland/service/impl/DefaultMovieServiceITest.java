@@ -8,11 +8,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nomarch.movieland.MovielandApplicationContext;
 import org.nomarch.movieland.TestContext;
-import org.nomarch.movieland.common.Currency;
+import org.nomarch.movieland.common.CurrencyCode;
 import org.nomarch.movieland.dto.FullMovieDto;
 import org.nomarch.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,14 +26,14 @@ class DefaultMovieServiceITest {
     @Autowired
     private MovieService movieService;
 
-    @DisplayName("Get reviews movie by id")
+    @DisplayName("Get movie by id")
     @Test
     @DataSet(value = "movies_genres_countries_and_reviews.xml", cleanBefore = true, skipCleaningFor = {"genres"})
     void testFindById() {
         //prepare
 
         //when
-        FullMovieDto returnedDTO = movieService.findById(2L, Currency.USD);
+        FullMovieDto returnedDTO = assertTimeout(Duration.ofSeconds(5L), () -> movieService.findById(2L, CurrencyCode.USD));
 
         //then
         assertNotNull(returnedDTO);

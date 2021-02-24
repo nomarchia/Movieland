@@ -62,7 +62,9 @@ public class MoviesController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void add(@RequestBody SaveMovieRequest newMovie) {
-        movieService.add(newMovie);
+        Movie movie = movieDtoMapper.dtoToMovie(newMovie);
+
+        movieService.add(movie);
     }
 
     @Secured(UserRole.ADMIN)
