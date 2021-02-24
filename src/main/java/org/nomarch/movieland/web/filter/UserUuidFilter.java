@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @WebFilter(filterName = "rolesSecurityFilter", urlPatterns = "/*")
-public class RolesSecurityFilter implements Filter {
+public class UserUuidFilter implements Filter {
     private SecurityService securityService;
 
     @Override
@@ -28,32 +28,13 @@ public class RolesSecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
 
-        String requestURI = servletRequest.getRequestURI();
-        String path = requestURI.substring(requestURI.indexOf("/v1") + 3);
-
-        HttpMethod method = HttpMethod.valueOf(servletRequest.getMethod());
-
-        if (method == HttpMethod.GET || path.equals("/login")) {
-            chain.doFilter(request, response);
-        }
-
         String uuid = servletRequest.getHeader("uuid");
         if (uuid != null) {
             User user = securityService.findUserByUUIDToken(uuid);
             UserHolder.setUser(user);
-
-            if (user.getRole() == UserRole.ADMIN) {
-                chain.doFilter(request, response);
-            }
-
-            if (user.getRole() == UserRole.USER) {
-                if (path.equals("/review") && method == HttpMethod.POST) {
-                    chain.doFilter(request, response);
-                }
-            }
-        } else {
-            throw new InsufficientAccessRightsException("Request sender don't have access rights to access url " + method.toString() + " " + requestURI);
         }
+
+        chain.doFilter(request, response);
     }
 
     @Override

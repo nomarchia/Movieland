@@ -57,7 +57,7 @@ class CountriesControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Country2"))
 
                 .andExpect(jsonPath("$[2].id").value(3))
-                .andExpect(jsonPath("$[2].name").value("Country3"));;
+                .andExpect(jsonPath("$[2].name").value("Country3"));
 
 
     }

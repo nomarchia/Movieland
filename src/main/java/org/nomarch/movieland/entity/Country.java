@@ -5,6 +5,6 @@ import lombok.*;
 @Builder
 @Getter
 public class Country {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 }

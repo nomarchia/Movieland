@@ -2,12 +2,14 @@ package org.nomarch.movieland.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.mapper.ReviewDtoMapper;
 import org.nomarch.movieland.request.ReviewRequest;
 import org.nomarch.movieland.entity.Review;
 import org.nomarch.movieland.entity.User;
 import org.nomarch.movieland.security.UserHolder;
 import org.nomarch.movieland.service.ReviewService;
+import org.nomarch.movieland.web.Secured;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +24,8 @@ public class ReviewsController {
 
     @PostMapping(value = "review")
     @ResponseStatus(HttpStatus.CREATED)
+    @Secured(UserRole.USER)
     public void addReview(@RequestBody ReviewRequest reviewRequest) {
-        log.debug("POST request by url /review to add new review");
-
         Review newReview = mapper.dtoToReview(reviewRequest);
 
         User user = UserHolder.getUser();

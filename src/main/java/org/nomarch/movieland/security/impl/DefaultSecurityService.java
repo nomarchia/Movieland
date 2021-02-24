@@ -24,7 +24,7 @@ import java.util.UUID;
 public class DefaultSecurityService implements SecurityService {
     private final UserDao userDao;
     private final Map<String, Session> uuidSessionCacheMap = new HashMap<>();
-    @Value("${uuid.lifetime.in.seconds}")
+    @Value("${user.uuid.lifetime.in.seconds}")
     private int uuidLifeTimeInSeconds;
 
     @Override
@@ -65,10 +65,7 @@ public class DefaultSecurityService implements SecurityService {
 
     @Scheduled(fixedRateString = "${user.uuid.cache.clear.interval}")
     private void clearExpiredSessionsCache() {
-        for (Map.Entry<String, Session> entry : uuidSessionCacheMap.entrySet()) {
-            if (LocalDateTime.now().isAfter(entry.getValue().getExpiryTime())) {
-                uuidSessionCacheMap.remove(entry.getKey());
-            }
-        }
+        uuidSessionCacheMap.entrySet().removeIf(entry ->
+                LocalDateTime.now().isAfter(entry.getValue().getExpiryTime()));
     }
 }

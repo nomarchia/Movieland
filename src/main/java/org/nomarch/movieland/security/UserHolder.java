@@ -4,13 +4,13 @@ import org.nomarch.movieland.entity.User;
 
 public class UserHolder {
 
-    private static final ThreadLocal<User> threadLocalScope = new ThreadLocal<>();
+    private static final ThreadLocal<User> USER_THREAD_LOCAL = new ThreadLocal<>();
 
     public static User getUser() {
-        return threadLocalScope.get();
+        return USER_THREAD_LOCAL.get();
     }
 
     public static void setUser(User user) {
-        threadLocalScope.set(user);
+        USER_THREAD_LOCAL.set(user);
     }
 }

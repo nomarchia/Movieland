@@ -3,7 +3,9 @@ package org.nomarch.movieland.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nomarch.movieland.dto.LoginInfo;
+import org.nomarch.movieland.entity.UserRole;
 import org.nomarch.movieland.security.SecurityService;
+import org.nomarch.movieland.web.Secured;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +16,17 @@ import org.springframework.web.bind.annotation.*;
 public class UsersController {
     private final SecurityService securityService;
 
+    @Secured(UserRole.GUEST)
     @PostMapping(value = "login")
     public LoginInfo login(@RequestParam String email, @RequestParam String password) {
-        log.debug("POST request by url \"/api/v1/login\" for user with email address: {}", email);
+        log.debug("Login attempt for user with email address: {}", email);
         return securityService.login(email, password);
     }
 
+    @Secured(UserRole.USER)
     @DeleteMapping(value = "logout")
     public void logout(@RequestHeader String uuid) {
-        log.debug("DELETE request by url \"/api/v1/logout\" for user with uuid token: {}", uuid);
+        log.debug("Logout attempt for user with uuid token: {}", uuid);
         securityService.logout(uuid);
     }
 }

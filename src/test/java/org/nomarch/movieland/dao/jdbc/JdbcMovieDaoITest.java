@@ -17,6 +17,7 @@ import org.nomarch.movieland.entity.Movie;
 import org.nomarch.movieland.common.SortingOrder;
 import org.nomarch.movieland.request.GetMovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import java.util.ArrayList;
@@ -254,20 +255,34 @@ class JdbcMovieDaoITest {
         movieDao.add(newMovie);
     }
 
-    @DisplayName("Update info of existing movie in DB without changed genres/countries")
+    @DisplayName("Update movie info without changed genres/countries")
     @Test
     @DataSet(value = "movies.xml", cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
     @ExpectedDataSet(value = "movies_after_movie_edited.xml")
     @Order(2)
     void testEditMovie() {
         //prepare
-        Movie updatedMovie = Movie.builder().id(2L).nameRussian("Изменное название").price(200.1).picturePath("newPoster.jpg").build();
+        Movie updatedMovie = Movie.builder().id(2L).nameNative("Forrest Gump").nameRussian("Изменное название")
+                .yearOfRelease(1994).price(200.1).picturePath("newPoster.jpg").build();
 
         //when
         movieDao.edit(updatedMovie);
     }
 
-    @DisplayName("Update info of existing movie in DB with changed genres/countries")
+    @DisplayName("Update movie info, try to set Null value to NOT NULL column")
+    @Test
+    @DataSet(value = "movies.xml", cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
+    @Order(2)
+    void testEditMovieTrySetNullToNotNullColumn() {
+        //prepare
+        Movie updatedMovie =  Movie.builder().id(2L).nameNative(null).nameRussian("Изменное название")
+                .yearOfRelease(1994).price(200.1).picturePath("newPoster.jpg").build();
+
+        //when
+        assertThrows(DataIntegrityViolationException.class, () -> movieDao.edit(updatedMovie));
+    }
+
+    @DisplayName("Update movie info with changed genres/countries")
     @Test
     @DataSet(value = "movies_genres_countries_and_many_to_many_tables(movieDaoTest).xml",
             cleanBefore = true, cleanAfter = true, skipCleaningFor = {"genres"})
@@ -277,7 +292,8 @@ class JdbcMovieDaoITest {
         //prepare
         Map<String, List> testData = createTestGenresAndCountries();
 
-        Movie updatedMovie = Movie.builder().id(3L).nameRussian("Изменное название").price(200.1).picturePath("newPoster.jpg")
+        Movie updatedMovie = Movie.builder().id(3L).nameNative("Forrest Gump").nameRussian("Изменное название")
+                .yearOfRelease(1994).price(200.1).picturePath("newPoster.jpg")
                 .genres(testData.get("genres")).countries(testData.get("countries")).build();
 
         //when
