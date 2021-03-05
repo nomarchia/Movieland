@@ -17,5 +17,7 @@ public interface MovieDao {
 
     void add(Movie newMovie);
 
+    Long addAndReturnId(Movie newMovie);
+
     void edit(Movie updatedMovie);
 }

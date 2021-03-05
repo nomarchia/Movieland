@@ -74,7 +74,7 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public void add(Movie newMovie) {
+    public Long addAndReturnId(Movie newMovie) {
         log.debug("Saving new movie ({}) to DB", newMovie);
 
         MapSqlParameterSource map = getMapSqlParameterSource(newMovie);
@@ -92,6 +92,13 @@ public class JdbcMovieDao implements MovieDao {
 
         updateDependantManyToManyTable(ADD_MOVIE_GENRES, movieId, genreIds);
         updateDependantManyToManyTable(ADD_MOVIE_COUNTRIES, movieId, countryIds);
+
+        return movieId;
+    }
+
+    @Override
+    public void add(Movie newMovie) {
+        addAndReturnId(newMovie);
     }
 
     @Override
