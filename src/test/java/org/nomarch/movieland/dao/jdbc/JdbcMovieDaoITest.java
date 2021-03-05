@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JdbcMovieDaoITest {
     @Autowired
-    private MovieDao movieDao;
+    private JdbcMovieDao movieDao;
 
     @DisplayName("Get all movies from DB")
     @Test
